@@ -1,0 +1,26 @@
+- inverser les couleurs des cases
+- movement des pieces
+regles standards
+en passant
+the rock, une seule fois, si le roi a bougé c'est non
+historique des coups
+les nuls 
+promotions des pions
+pieces custums cet echequier personnalisable
+echec et mat
+la pat 
+chronometre + nuls à la fin du temps + differents temps
+pieces personalisables
+propositions de coup (les ptits points)
+les nombres de points + pieces mangées
+echec = + et mat = # et prendre une piece = x et rock = o-o et grand rock = o-o-o promotion = pion=dame et score pour nul = 1/2-1/2  
+E= 1/(1+10^(R(opposant)−R)/400)
+ou R(opposant) est l'elo de l'adversaire et R est notre elo 
+menu: settings, custum, play, exit, game mode
+couleur du joueur aleatoire
+la cadence
+ 
+ mode de jeu: 
+ à 4
+ à 2
+ chess 960 
