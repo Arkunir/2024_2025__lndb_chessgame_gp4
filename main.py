@@ -5,57 +5,38 @@ class Interface:
     def __init__(self, master):
         self.master = master
         self.master.title("Jeu d'échecs")
+        
+        # Initialiser le mode plein écran
+        self.fullscreen = True
+        self.master.attributes('-fullscreen', self.fullscreen)
+
+        # Lier les événements pour activer/désactiver le plein écran
+        self.master.bind("<F11>", self.toggle_fullscreen)  # Appuyer sur F11 pour basculer en plein écran
+        self.master.bind("<Escape>", self.end_fullscreen)   # Appuyer sur Échap pour quitter le plein écran
+
+        self.buttons = {}
         self.create_board()
-        self.setup_pieces()
 
     def create_board(self):
-        # Création des coordonnées des colonnes
-        columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-        
-        # Affichage des coordonnées des colonnes en haut
-        for col in range(8):
-            label = tk.Label(self.master, text=columns[col], width=4, height=2)
-            label.grid(row=0, column=col + 1)  # Décalage d'une colonne pour le numéro de ligne
-
-        # Affichage des coordonnées des colonnes en bas
-        for col in range(8):
-            label = tk.Label(self.master, text=columns[col], width=4, height=2)
-            label.grid(row=9, column=col + 1)  # Ligne 9 pour le bas du plateau
-
-        # Affichage des coordonnées des lignes à gauche
-        for row in range(8):
-            label = tk.Label(self.master, text=str(8 - row), width=4, height=2)
-            label.grid(row=row + 1, column=0)  # Décalage d'une ligne pour les lettres de colonne
-
-        # Affichage des coordonnées des lignes à droite
-        for row in range(8):
-            label = tk.Label(self.master, text=str(8 - row), width=4, height=2)
-            label.grid(row=row + 1, column=9)  # Décalage d'une ligne pour les lettres de colonne
-
-        # Création du plateau d'échecs
-        self.buttons = {}
+        # Créer le plateau d'échecs
         for row in range(8):
             for col in range(8):
-                # Changer les couleurs des cases
-                color = "#D2B48C" if (row + col) % 2 == 0 else "#FFFACD"  # Marron clair et blanc
-                button = tk.Button(self.master, bg=color, width=8, height=4, command=lambda r=row, c=col: self.on_square_click(r, c))
-                button.grid(row=row + 1, column=col + 1)  # Décalage d'une ligne et d'une colonne
-                self.buttons[(row, col)] = button  # Stocker le bouton pour y accéder plus tard
+                color = 'white' if (row + col) % 2 == 0 else 'black'
+                button = tk.Button(self.master, bg=color, width=8, height=4,
+                                   command=lambda r=row, c=col: self.on_square_click(r, c))
+                button.grid(row=row, column=col)
+                self.buttons[(row, col)] = button
+
+        self.setup_pieces()
 
     def setup_pieces(self):
-        # Configuration des pièces sur le plateau
         pieces = {
-            'r': '♖', 'n': '♘', 'b': '♗', 'q': '♕', 'k': '♔', 'p': '♙',  # Blanc
-            'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♚', 'P': '♟'   # Noir
+            'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙',
+            'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♟', 'p': '♟'
         }
-
-        # Définir la taille de la police pour les pièces
-        font_size = 24  # Taille de police souhaitée
-        font = ('Arial', font_size)
+        font = ('Arial', 32)
 
         # Placer les pièces blanches
-        for col in range(8):
-            self.buttons[(1, col)].config(text=pieces['P'], font=font)  # Pions blancs
         self.buttons[(0, 0)].config(text=pieces['R'], font=font)
         self.buttons[(0, 1)].config(text=pieces['N'], font=font)
         self.buttons[(0, 2)].config(text=pieces['B'], font=font)
@@ -64,11 +45,10 @@ class Interface:
         self.buttons[(0, 5)].config(text=pieces['B'], font=font)
         self.buttons[(0, 6)].config(text=pieces['N'], font=font)
         self.buttons[(0, 7)].config(text=pieces['R'], font=font)
-
-        
-        # Placer les pièces noires
         for col in range(8):
-            self.buttons[(6, col)].config(text=pieces['p'], font=font)  # Pions noirs
+            self.buttons[(1, col)].config(text=pieces['P'], font=font)
+
+        # Placer les pièces noires
         self.buttons[(7, 0)].config(text=pieces['r'], font=font)
         self.buttons[(7, 1)].config(text=pieces['n'], font=font)
         self.buttons[(7, 2)].config(text=pieces['b'], font=font)
@@ -79,12 +59,19 @@ class Interface:
         self.buttons[(7, 7)].config(text=pieces['r'], font=font)
 
     def on_square_click(self, row, col):
-        # Fonction qui sera appelée lors du clic sur une case
         piece = self.buttons[(row, col)].cget("text")
-        if piece:  # Si une pièce est présente
+        if piece.strip():  # Vérifie si une pièce est présente (non vide)
             messagebox.showinfo("Pièce sélectionnée", f"Vous avez sélectionné la pièce: {piece}")
         else:
             messagebox.showinfo("Case vide", "Cette case est vide.")
+
+    def toggle_fullscreen(self, event=None):
+        self.fullscreen = not self.fullscreen
+        self.master.attributes('-fullscreen', self.fullscreen)
+
+    def end_fullscreen(self, event=None):
+        self.fullscreen = False
+        self.master.attributes('-fullscreen', False)
 
 if __name__ == "__main__":
     root = tk.Tk()
