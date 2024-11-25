@@ -18,10 +18,14 @@ class Interface:
         self.create_board()
 
     def create_board(self):
+        # Couleurs pour les cases
+        couleur_bois_clair = '#D19A6A'  # Couleur bois clair
+        couleur_bois_fonce = '#5B3A29'   # Couleur bois foncé
+
         # Créer le plateau d'échecs
         for row in range(8):
             for col in range(8):
-                color = 'white' if (row + col) % 2 == 0 else 'black'
+                color = couleur_bois_clair if (row + col) % 2 == 0 else couleur_bois_fonce
                 button = tk.Button(self.master, bg=color, width=8, height=4,
                                    command=lambda r=row, c=col: self.on_square_click(r, c))
                 button.grid(row=row, column=col)
