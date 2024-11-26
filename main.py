@@ -9,6 +9,7 @@ class Interface:
         self.setup_pieces()
 
     def create_board(self):
+<<<<<<< HEAD
         columns = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
         
         # Configuration des colonnes pour qu'elles aient la même taille
@@ -41,6 +42,19 @@ class Interface:
                 color = "#D2B48C" if (row + col) % 2 == 0 else "#FFFACD"
                 button = tk.Button(self.master, bg=color, command=lambda r=row, c=col: self.on_square_click(r, c))
                 button.grid(row=row + 1, column=col + 1, sticky="nsew")
+=======
+        # Couleurs pour les cases
+        couleur_bois_clair = '#D19A6A'  # Couleur bois clair
+        couleur_bois_fonce = '#5B3A29'   # Couleur bois foncé
+
+        # Créer le plateau d'échecs
+        for row in range(8):
+            for col in range(8):
+                color = couleur_bois_clair if (row + col) % 2 == 0 else couleur_bois_fonce
+                button = tk.Button(self.master, bg=color, width=8, height=4,
+                                   command=lambda r=row, c=col: self.on_square_click(r, c))
+                button.grid(row=row, column=col)
+>>>>>>> cdbf8e738db081ad7440712aaa9a48875cc02aae
                 self.buttons[(row, col)] = button
                 button.config(text=" ")  # Définir une case vide avec un espace
 
