@@ -1,0 +1,8 @@
+chess_game/
+│
+├── main.py            # Point d'entrée du jeu, lance l'application Tkinter
+├── board.py           # Contient la logique de l'échiquier (initialisation, affichage, gestion des mouvements)
+├── pieces.py          # Contient la définition des pièces et leurs comportements
+├── utils.py           # Fonctions utilitaires (par exemple, validation des mouvements, etc.)
+└── assets/
+    └── images/        # Dossier pour les images (si tu choisis d'utiliser des images pour les pièces)
