@@ -179,19 +179,21 @@ class Plateau:
                     # Déplacer la pièce
                     self.board[end[0]][end[1]] = piece
                     self.board[start[0]][start[1]] = None
-                    piece.move(start, end)  # Marquer que la pièce a bougé
-                    self.switch_turn()  # Passer au tour suivant
+                    piece.move(start, end)
+
+                    # Passer au tour suivant
+                    self.switch_turn()
+                    self.selected_piece = None
+                    self.selected_position = None
                 else:
                     self.show_invalid_move_message()
             except Exception:
                 self.show_invalid_move_message()
 
-            self.selected_piece = None  # Désélectionner la pièce après le mouvement
-
         else:
-            # Sélectionner une pièce
-            if self.board[y][x]:
-                self.selected_piece = self.board[y][x]
+            selected_piece = self.board[y][x]
+            if selected_piece and selected_piece.color == self.current_turn:
+                self.selected_piece = selected_piece
                 self.selected_position = (y, x)
 
         self.display()
@@ -200,7 +202,6 @@ class Plateau:
         self.canvas.create_text(240, 520, text="Mouvement invalide !", font=("Arial", 12), fill="red")
 
     def switch_turn(self):
-        # Changer le tour
         self.current_turn = 'black' if self.current_turn == 'white' else 'white'
 
 
