@@ -1,6 +1,5 @@
 import tkinter as tk
 
-
 # Classe pour représenter une pièce
 class Piece:
     def __init__(self, color, symbol):
@@ -13,40 +12,39 @@ class Piece:
 
 class Pawn(Piece):
     def __init__(self, color):
-        symbol = 'p' if color == 'black' else 'P'  # Noir = minuscule, Blanc = majuscule
+        symbol = 'p' if color == 'black' else 'P'
         super().__init__(color, symbol)
-        self.has_moved = False  # Permet de suivre si le pion a déjà bougé
+        self.has_moved = False
 
     def is_valid_move(self, start, end, board):
-        direction = -1 if self.color == 'white' else 1  # Direction du mouvement (vers le haut ou vers le bas)
+        direction = -1 if self.color == 'white' else 1
         dx, dy = end[0] - start[0], end[1] - start[1]
 
         # Mouvement d'une case en avant
         if dx == direction and dy == 0 and board[end[0]][end[1]] is None:
             return True
 
-        # Mouvement de deux cases en avant, seulement si le pion n'a pas encore bougé
+        # Mouvement de deux cases en avant (si non encore déplacé)
         if dx == 2 * direction and dy == 0 and not self.has_moved:
-            middle = (start[0] + end[0]) // 2  # Case intermédiaire
+            middle = (start[0] + end[0]) // 2
             if board[middle][start[1]] is None and board[end[0]][end[1]] is None:
                 return True
 
         # Capture en diagonale
         if dx == direction and abs(dy) == 1 and board[end[0]][end[1]] is not None:
             target_piece = board[end[0]][end[1]]
-            if target_piece.color != self.color:  # Doit être une pièce ennemie
+            if target_piece.color != self.color:
                 return True
 
         return False
 
     def move(self, start, end):
-        self.has_moved = True  # Marquer que le pion a bougé
-
+        self.has_moved = True
 
 
 class Rook(Piece):
     def __init__(self, color):
-        symbol = 'r' if color == 'black' else 'R'  # Noir = minuscule, Blanc = majuscule
+        symbol = 'r' if color == 'black' else 'R'
         super().__init__(color, symbol)
 
     def is_valid_move(self, start, end, board):
@@ -55,7 +53,7 @@ class Rook(Piece):
 
 class Knight(Piece):
     def __init__(self, color):
-        symbol = 'n' if color == 'black' else 'N'  # Noir = minuscule, Blanc = majuscule
+        symbol = 'n' if color == 'black' else 'N'
         super().__init__(color, symbol)
 
     def is_valid_move(self, start, end, board):
@@ -65,7 +63,7 @@ class Knight(Piece):
 
 class Bishop(Piece):
     def __init__(self, color):
-        symbol = 'b' if color == 'black' else 'B'  # Noir = minuscule, Blanc = majuscule
+        symbol = 'b' if color == 'black' else 'B'
         super().__init__(color, symbol)
 
     def is_valid_move(self, start, end, board):
@@ -75,7 +73,7 @@ class Bishop(Piece):
 
 class Queen(Piece):
     def __init__(self, color):
-        symbol = 'q' if color == 'black' else 'Q'  # Noir = minuscule, Blanc = majuscule
+        symbol = 'q' if color == 'black' else 'Q'
         super().__init__(color, symbol)
 
     def is_valid_move(self, start, end, board):
@@ -84,7 +82,7 @@ class Queen(Piece):
 
 class King(Piece):
     def __init__(self, color):
-        symbol = 'k' if color == 'black' else 'K'  # Noir = minuscule, Blanc = majuscule
+        symbol = 'k' if color == 'black' else 'K'
         super().__init__(color, symbol)
 
     def is_valid_move(self, start, end, board):
@@ -92,7 +90,7 @@ class King(Piece):
         return dx <= 1 and dy <= 1
 
 
-# Usine pour créer des pièces en fonction du caractère
+# Usine pour créer des pièces
 class PieceFactory:
     @staticmethod
     def create_piece(char):
@@ -123,6 +121,7 @@ class Plateau:
         self.board = self.initialize_board()
         self.selected_piece = None
         self.selected_position = None
+        self.current_turn = 'white'  # Le tour commence avec les blancs
 
         # Lier les clics de la souris
         self.canvas.bind("<Button-1>", self.on_click)
@@ -159,32 +158,53 @@ class Plateau:
                         fill="black"  # Toutes les pièces seront noires
                     )
 
+        # Afficher quel est le tour actuel
+        self.canvas.create_text(240, 500, text=f"C'est au tour des {'Blancs' if self.current_turn == 'white' else 'Noirs'}", font=("Arial", 16))
+
     def on_click(self, event):
         case_size = 60
         x, y = event.x // case_size, event.y // case_size
 
         if self.selected_piece:
-            # Déplacer la pièce si c'est possible
             start = self.selected_position
             end = (y, x)
             piece = self.selected_piece
 
-            if piece.is_valid_move(start, end, self.board):
-                self.board[end[0]][end[1]] = piece
-                self.board[start[0]][start[1]] = None
+            # Vérifier que la pièce appartient au joueur dont c'est le tour
+            if piece.color != self.current_turn:
+                return
 
-            self.selected_piece = None
-            self.selected_position = None
+            try:
+                if piece.is_valid_move(start, end, self.board):
+                    # Déplacer la pièce
+                    self.board[end[0]][end[1]] = piece
+                    self.board[start[0]][start[1]] = None
+                    piece.move(start, end)  # Marquer que la pièce a bougé
+                    self.switch_turn()  # Passer au tour suivant
+                else:
+                    self.show_invalid_move_message()
+            except Exception:
+                self.show_invalid_move_message()
+
+            self.selected_piece = None  # Désélectionner la pièce après le mouvement
+
         else:
-            # Sélectionner une pièce si elle existe
+            # Sélectionner une pièce
             if self.board[y][x]:
                 self.selected_piece = self.board[y][x]
                 self.selected_position = (y, x)
 
         self.display()
 
+    def show_invalid_move_message(self):
+        self.canvas.create_text(240, 520, text="Mouvement invalide !", font=("Arial", 12), fill="red")
 
-# Point d'entrée principal
+    def switch_turn(self):
+        # Changer le tour
+        self.current_turn = 'black' if self.current_turn == 'white' else 'white'
+
+
+# Fonction principale pour démarrer l'application
 def main():
     root = tk.Tk()
     root.title("Jeu d'échecs")
