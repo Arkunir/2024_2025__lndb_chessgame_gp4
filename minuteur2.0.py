@@ -158,7 +158,7 @@ class Timer:
         self.pause_button.config(text="Pause")
         
         # Réinitialisation de l'interface
-        messagebox.showinfo("Jeu réinitialisé", "Le jeu a été réinitialisé avec succès.")
+        messagebox.showinfo("Minuteur réinitialisé", "Le minuteur a été réinitialisé avec succès.")
 
 # Création de la fenêtre principale
 root = tk.Tk()
