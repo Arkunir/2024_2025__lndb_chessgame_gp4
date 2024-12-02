@@ -1,5 +1,3 @@
-# utils.py
-
-def is_valid_move(piece, start, end):
-    # Logique de validation des mouvements
-    pass
+def is_within_bounds(position):
+    x, y = position
+    return 0 <= x < 8 and 0 <= y < 8

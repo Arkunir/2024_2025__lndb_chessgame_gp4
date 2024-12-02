@@ -1,17 +1,15 @@
-# main.py
 import tkinter as tk
-from board import Board
+from Plateau import Plateau  # Assurez-vous que le nom correspond
 
 def main():
-    # Créer la fenêtre principale Tkinter
+    # Créer une fenêtre principale Tkinter
     root = tk.Tk()
     root.title("Jeu d'échecs")
 
-    # Créer l'échiquier et l'afficher
-    board = Board(root)
-    board.display()
+    # Initialiser et afficher l'échiquier
+    plateau = Plateau(root)
+    plateau.display()
 
-    # Lancer la boucle Tkinter
     root.mainloop()
 
 if __name__ == "__main__":
