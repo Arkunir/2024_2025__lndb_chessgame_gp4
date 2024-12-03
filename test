@@ -85,127 +85,139 @@ class Plateau:
             self.draw_board()
 
     def get_valid_moves(self, piece, row, col):
-    moves = []
+        moves = []
 
-    if piece.nom in ['P', 'p']:  # Pion
-        direction = -1 if piece.couleur == 'blanc' else 1  # Direction du mouvement
-        start_row = 6 if piece.couleur == 'blanc' else 1  # Position de départ pour avancer de 2 cases
+        if piece.nom in ['P', 'p']:  # Pion
+            direction = -1 if piece.couleur == 'blanc' else 1  # Direction du mouvement
+            start_row = 6 if piece.couleur == 'blanc' else 1  # Position de départ pour avancer de 2 cases
 
-        # Déplacement d'une case
-        if 0 <= row + direction < 8 and self.cases[row + direction][col] is None:
-            moves.append((row + direction, col))
+            # Déplacement d'une case
+            if 0 <= row + direction < 8 and self.cases[row + direction][col] is None:
+                moves.append((row + direction, col))
 
-        # Déplacement de deux cases depuis la position de départ
-        if row == start_row and self.cases[row + direction][col] is None and self.cases[row + 2 * direction][col] is None:
-            moves.append((row + 2 * direction, col))
+            # Déplacement de deux cases depuis la position de départ
+            if row == start_row and self.cases[row + direction][col] is None and self.cases[row + 2 * direction][col] is None:
+                moves.append((row + 2 * direction, col))
 
-        # Captures
-        if row + direction < 8:
-            if col > 0 and self.cases[row + direction][col - 1] and self.cases[row + direction][col - 1].couleur != piece.couleur:
-                moves.append((row + direction, col - 1))  # Capture gauche
-            if col < 7 and self.cases[row + direction][col + 1] and self.cases[row + direction][col + 1].couleur != piece.couleur:
-                moves.append((row + direction, col + 1))  # Capture droite
+            # Captures
+            if row + direction < 8:
+                if col > 0 and self.cases[row + direction][col - 1] and self.cases[row + direction][col - 1].couleur != piece.couleur:
+                    moves.append((row + direction, col - 1))  # Capture gauche
+                if col < 7 and self.cases[row + direction][col + 1] and self.cases[row + direction][col + 1].couleur != piece.couleur:
+                    moves.append((row + direction, col + 1))  # Capture droite
 
-    # Logique pour la Tour (T)
-    if piece.nom in ['T', 't']:  # Tour
-        # Mouvements verticaux
-        for i in range(1, 8):
-            if row + i < 8 and self.cases[row + i][col] is None:
-                moves.append((row + i, col))
-            elif row + i < 8 and self.cases[row + i][col].couleur != piece.couleur:
-                moves.append((row + i, col))
-                break
-            else:
-                break
+        # Logique pour la Tour (T)
+        if piece.nom in ['T', 't']:  # Tour
+            # Mouvements verticaux
+            for i in range(1, 8):
+                if row + i < 8 and self.cases[row + i][col] is None:
+                    moves.append((row + i, col))
+                elif row + i < 8 and self.cases[row + i][col].couleur != piece.couleur:
+                    moves.append((row + i, col))
+                    break
+                else:
+                    break
 
-        for i in range(1, 8):
-            if row - i >= 0 and self.cases[row - i][col] is None:
-                moves.append((row - i, col))
-            elif row - i >= 0 and self.cases[row - i][col].couleur != piece.couleur:
-                moves.append((row - i, col))
-                break
-            else:
-                break
+            for i in range(1, 8):
+                if row - i >= 0 and self.cases[row - i][col] is None:
+                    moves.append((row - i, col))
+                elif row - i >= 0 and self.cases[row - i][col].couleur != piece.couleur:
+                    moves.append((row - i, col))
+                    break
+                else:
+                    break
 
-        # Mouvements horizontaux
-        for i in range(1, 8):
-            if col + i < 8 and self.cases[row][col + i] is None:
-                moves.append((row, col + i))
-            elif col + i < 8 and self.cases[row][col + i].couleur != piece.couleur:
-                moves.append((row, col + i))
-                break
-            else:
-                break
+            # Mouvements horizontaux
+            for i in range(1, 8):
+                if col + i < 8 and self.cases[row][col + i] is None:
+                    moves.append((row, col + i))
+                elif col + i < 8 and self.cases[row][col + i].couleur != piece.couleur:
+                    moves.append((row, col + i))
+                    break
+                else:
+                    break
 
-        for i in range(1, 8):
-            if col - i >= 0 and self.cases[row][col - i] is None:
-                moves.append((row, col - i))
-            elif col - i >= 0 and self.cases[row][col - i].couleur != piece.couleur:
-                moves.append((row, col - i))
-                break
-            else:
-                break
+            for i in range(1, 8):
+                if col - i >= 0 and self.cases[row][col - i] is None:
+                    moves.append((row, col - i))
+                elif col - i >= 0 and self.cases[row][col - i].couleur != piece.couleur:
+                    moves.append((row, col - i))
+                    break
+                else:
+                    break
 
-    # Logique pour le Fou (F)
-    if piece.nom in ['F', 'f']:  # Fou
-        for i in range(1, 8):
-            for dx, dy in [(i, i), (i, -i), (-i, i), (-i, -i)]:
-                new_row, new_col = row + dy, col + dx
-                if 0 <= new_row < 8 and 0 <= new_col < 8:
-                    if self.cases[new_row][new_col] is None:
-                        moves.append((new_row, new_col))
-                    elif self.cases[new_row][new_col].couleur != piece.couleur:
-                        moves.append((new_row, new_col))
-                        break  # Peut capturer, mais ne peut pas aller plus loin
-                                        else:
-                        break  # Arrête le mouvement si une pièce de la même couleur est rencontrée
-
-    # Logique pour la Reine (D)
-    if piece.nom in ['D', 'd']:  # Reine
-        # Mouvements verticaux et horizontaux (comme la Tour)
-        for i in range(1, 8):
-            if row + i < 8 and self.cases[row + i][col] is None:
-                moves.append((row + i, col))
-            elif row + i < 8 and self.cases[row + i][col].couleur != piece.couleur:
-                moves.append((row + i, col))
-                break  # Peut capturer, mais ne peut pas aller plus loin
-            else:
-                break
-
-        for i in range(1, 8):
-            if row - i >= 0 and self.cases[row - i][col] is None:
-                moves.append((row - i, col))
-            elif row - i >= 0 and self.cases[row - i][col].couleur != piece.couleur:
-                moves.append((row - i, col))
-                break  # Peut capturer, mais ne peut pas aller plus loin
-            else:
-                break
-
-        # Mouvements diagonaux (comme le Fou)
-        for i in range(1, 8):
-            for dx, dy in [(i, i), (i, -i), (-i, i), (-i, -i)]:
-                new_row, new_col = row + dy, col + dx
-                if 0 <= new_row < 8 and 0 <= new_col < 8:
-                    if self.cases[new_row][new_col] is None:
-                        moves.append((new_row, new_col))
-                    elif self.cases[new_row][new_col].couleur != piece.couleur:
-                        moves.append((new_row, new_col))
-                        break  # Peut capturer, mais ne peut pas aller plus loin
-                    else:
-                        break  # Arrête le mouvement si une pièce de la même couleur est rencontrée
-
-    # Logique pour le Roi (R)
-    if piece.nom in ['R', 'r']:  # Roi
-        for dx in [-1, 0, 1]:
-            for dy in [-1, 0, 1]:
-                if dx == 0 and dy == 0:
-                    continue  # Ignorer la case actuelle
+        # Logique pour le Cavalier (C)
+        if piece.nom in ['C', 'c']:  # Cavalier
+            knight_moves = [
+                (2, 1), (2, -1), (-2, 1), (-2, -1),
+                (1, 2), (1, -2), (-1, 2), (-1, -2)
+            ]
+            for dx, dy in knight_moves:
                 new_row, new_col = row + dy, col + dx
                 if 0 <= new_row < 8 and 0 <= new_col < 8:
                     if self.cases[new_row][new_col] is None or self.cases[new_row][new_col].couleur != piece.couleur:
                         moves.append((new_row, new_col))
 
-    return moves
+        # Logique pour le Fou (F)
+        if piece.nom in ['F', 'f']:  # Fou
+            for i in range(1, 8):
+                for dx, dy in [(i, i), (i, -i), (-i, i), (-i, -i)]:
+                    new_row, new_col = row + dy, col + dx
+                    if 0 <= new_row < 8 and 0 <= new_col < 8:
+                        if self.cases[new_row][new_col] is None:
+                            moves.append((new_row, new_col))
+                        elif self.cases[new_row][new_col].couleur != piece.couleur:
+                            moves.append((new_row, new_col))
+                            break
+                        else:
+                            break
+
+        # Logique pour la Reine (D)
+        if piece.nom in ['D', 'd']:  # Reine
+            # Mouvements verticaux et horizontaux (comme la Tour)
+            for i in range(1, 8):
+                if row + i < 8 and self.cases[row + i][col] is None:
+                    moves.append((row + i, col))
+                elif row + i < 8 and self.cases[row + i][col].couleur != piece.couleur:
+                    moves.append((row + i, col))
+                    break
+                else:
+                    break
+
+            for i in range(1, 8):
+                if row - i >= 0 and self.cases[row - i][col] is None:
+                    moves.append((row - i, col))
+                elif row - i >= 0 and self.cases[row - i][col].couleur != piece.couleur:
+                    moves.append((row - i, col))
+                    break
+                else:
+                    break
+
+            # Mouvements diagonaux (comme le Fou)
+            for i in range(1, 8):
+                for dx, dy in [(i, i), (i, -i), (-i, i), (-i, -i)]:
+                    new_row, new_col = row + dy, col + dx
+                    if 0 <= new_row < 8 and 0 <= new_col < 8:
+                        if self.cases[new_row][new_col] is None:
+                            moves.append((new_row, new_col))
+                        elif self.cases[new_row][new_col].couleur != piece.couleur:
+                            moves.append((new_row, new_col))
+                            break
+                        else:
+                            break
+
+        # Logique pour le Roi (R)
+        if piece.nom in ['R', 'r']:  # Roi
+            for dx in [-1, 0, 1]:
+                for dy in [-1, 0, 1]:
+                    if dx == 0 and dy == 0:
+                        continue  # Ignorer la case actuelle
+                    new_row, new_col = row + dy, col + dx
+                    if 0 <= new_row < 8 and 0 <= new_col < 8:
+                        if self.cases[new_row][new_col] is None or self.cases[new_row][new_col].couleur != piece.couleur:
+                            moves.append((new_row, new_col))
+
+        return moves
 
 if __name__ == "__main__":
     root = tk.Tk()
