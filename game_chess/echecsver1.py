@@ -1,5 +1,7 @@
 import pygame
 import chess
+import cairosvg
+import os
 
 # Initialisation de Pygame
 pygame.init()
@@ -10,18 +12,35 @@ ROWS, COLS = 8, 8  # Dimensions de l'échiquier
 SQUARE_SIZE = WIDTH // COLS  # Taille d'une case
 
 # Couleurs
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
-# Chargement des images des pièces
-PIECES = {}
-for piece in ['P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k']:
-    PIECES[piece] = pygame.transform.scale(
-        pygame.image.load(f'assets/{piece}.png'),
-        (SQUARE_SIZE, SQUARE_SIZE)
-    )
+# Chemin des fichiers de pièces
+ASSETS_PATH = "assets/"  # Dossier contenant les fichiers SVG des pièces
+PIECE_FILES = {
+    'P': "wP.svg", 'N': "wN.svg", 'B': "wB.svg", 'R': "wR.svg", 'Q': "wQ.svg", 'K': "wK.svg",
+    'p': "P.svg", 'n': "N.svg", 'b': "B.svg", 'r': "R.svg", 'q': "Q.svg", 'k': "K.svg"
+}
+
+# Fonction pour charger et convertir les fichiers SVG en surfaces Pygame
+def load_pieces():
+    pieces = {}
+    for piece, filename in PIECE_FILES.items():
+        svg_path = os.path.join(ASSETS_PATH, filename)
+        png_path = svg_path.replace(".svg", ".png")
+        
+        # Convertir en PNG si nécessaire
+        if not os.path.exists(png_path):
+            cairosvg.svg2png(url=svg_path, write_to=png_path)
+        
+        # Charger l'image PNG dans Pygame et redimensionner
+        image = pygame.image.load(png_path)
+        image = pygame.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE))
+        pieces[piece] = image
+    return pieces
+
+# Chargement des pièces
+PIECES = load_pieces()
 
 # Configuration initiale de l'échiquier
 board = chess.Board()
