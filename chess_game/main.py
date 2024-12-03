@@ -1,16 +1,21 @@
-import tkinter as tk
-from Plateau import Plateau  # Assurez-vous que le nom correspond
+from plateau import Plateau
+from utils import afficher_plateau, demander_deplacement
 
 def main():
-    # Créer une fenêtre principale Tkinter
-    root = tk.Tk()
-    root.title("Jeu d'échecs")
+    plateau = Plateau()
+    afficher_plateau(plateau)
 
-    # Initialiser et afficher l'échiquier
-    plateau = Plateau(root)
-    plateau.display()
+    while not plateau.est_fini():
+        print(f"Tour du joueur {'blanc' if plateau.tour_blanc else 'noir'}")
+        source, destination = demander_deplacement()
 
-    root.mainloop()
+        if plateau.deplacer_piece(source, destination):
+            afficher_plateau(plateau)
+        else:
+            print("Déplacement invalide, essayez à nouveau.")
+
+    print("Partie terminée !")
+    print("Gagnant :", "Blancs" if plateau.tour_blanc else "Noirs")
 
 if __name__ == "__main__":
     main()

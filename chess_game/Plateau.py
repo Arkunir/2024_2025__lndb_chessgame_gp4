@@ -1,42 +1,49 @@
-from tkinter import Canvas
-from pieces import PieceFactory
+from pieces import Piece, Roi, Pion
 
 class Plateau:
-    def __init__(self, root):
-        self.root = root
-        self.canvas = Canvas(root, width=480, height=480)
-        self.canvas.pack()
+    def __init__(self):
+        self.grille = self.initialiser_plateau()
+        self.tour_blanc = True
 
-        # Initialiser l'échiquier
-        self.board = self.initialize_board()
-        self.selected_piece = None
+    def initialiser_plateau(self):
+        # Création d'un plateau de 8x8 avec des pièces aux positions initiales
+        grille = [[None for _ in range(8)] for _ in range(8)]
 
-    def initialize_board(self):
-        layout = [
-            ['t', 'c', 'f', 'd', 'r', 'f', 'c', 't'],  # Noirs
-            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],  # Blancs
-            ['T', 'C', 'F', 'D', 'R', 'F', 'C', 'T']
-        ]
-
-        return [[PieceFactory.create_piece(char) for char in row] for row in layout]
-
-    def display(self):
-        case_size = 60
+        # Pions
         for i in range(8):
-            for j in range(8):
-                color = "#F5F5DC" if (i + j) % 2 == 0 else "#6F4F28"
-                x1, y1 = j * case_size, i * case_size
-                x2, y2 = (j + 1) * case_size, (i + 1) * case_size
-                self.canvas.create_rectangle(x1, y1, x2, y2, fill=color)
+            grille[1][i] = Pion(False)  # Pions noirs
+            grille[6][i] = Pion(True)   # Pions blancs
 
-                piece = self.board[i][j]
-                if piece:
-                    self.canvas.create_text(
-                        x1 + case_size / 2, y1 + case_size / 2,
-                        text=piece.symbol, font=("Arial", 24), fill=piece.color
-                    )
+        # Rois
+        grille[0][4] = Roi(False)  # Roi noir
+        grille[7][4] = Roi(True)   # Roi blanc
+
+        return grille
+
+    def est_fini(self):
+        # Fin si un des rois est capturé
+        roi_blanc, roi_noir = False, False
+        for ligne in self.grille:
+            for piece in ligne:
+                if isinstance(piece, Roi):
+                    if piece.est_blanc:
+                        roi_blanc = True
+                    else:
+                        roi_noir = True
+        return not (roi_blanc and roi_noir)
+
+    def deplacer_piece(self, source, destination):
+        x1, y1 = source
+        x2, y2 = destination
+
+        piece = self.grille[x1][y1]
+        if not piece or piece.est_blanc != self.tour_blanc:
+            return False
+
+        if piece.peut_se_deplacer(source, destination, self.grille):
+            self.grille[x2][y2] = piece
+            self.grille[x1][y1] = None
+            self.tour_blanc = not self.tour_blanc
+            return True
+
+        return False
