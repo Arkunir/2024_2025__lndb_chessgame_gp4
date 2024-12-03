@@ -118,7 +118,6 @@ class Timer:
                 self.start_button.config(state=tk.NORMAL)
                 self.switch_button.config(state=tk.DISABLED)
                 winner = "Joueur 2" if self.time_player_1 <= 0 else "Joueur 1"
-                messagebox.showinfo("Temps écoulé", f"{winner} a gagné !")
             else:
                 # Continue à mettre à jour le temps chaque seconde
                 self.root.after(1000, self.update_time)  # 1000 ms = 1 seconde
