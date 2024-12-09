@@ -1,4 +1,4 @@
-from plateau import Plateau
+from Plateau import Plateau
 from utils import afficher_plateau, demander_deplacement
 
 def main():
