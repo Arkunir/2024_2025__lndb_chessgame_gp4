@@ -1,29 +1,24 @@
 class Piece:
-    def __init__(self, color, symbol):
-        self.color = color
-        self.symbol = symbol
+    def __init__(self, est_blanc):
+        self.est_blanc = est_blanc
 
-    def is_valid_move(self, start, end, board):
-        raise NotImplementedError("Mouvement non défini pour cette pièce.")
+    def peut_se_deplacer(self, source, destination, grille):
+        raise NotImplementedError("Cette méthode doit être implémentée par les sous-classes.")
 
-class Pawn(Piece):
-    def is_valid_move(self, start, end, board):
-        # Implémentation simplifiée des mouvements du pion
-        direction = -1 if self.color == "white" else 1
-        dx, dy = end[0] - start[0], end[1] - start[1]
-        return (dx == direction and dy == 0)
+class Roi(Piece):
+    def peut_se_deplacer(self, source, destination, grille):
+        x1, y1 = source
+        x2, y2 = destination
+        dx, dy = abs(x2 - x1), abs(y2 - y1)
+        return dx <= 1 and dy <= 1
 
-class Rook(Piece):
-    def is_valid_move(self, start, end, board):
-        return start[0] == end[0] or start[1] == end[1]
+class Pion(Piece):
+    def peut_se_deplacer(self, source, destination, grille):
+        x1, y1 = source
+        x2, y2 = destination
+        direction = -1 if self.est_blanc else 1
 
-class PieceFactory:
-    @staticmethod
-    def create_piece(piece_char):
-        color = "white" if piece_char.isupper() else "black"
-        symbol_map = {
-            'P': ('P', Pawn), 'T': ('T', Rook),
-            # Ajouter d'autres pièces ici
-        }
-        symbol = piece_char.upper()
-        return symbol_map.get(symbol, (None, None))[1](color, symbol) if symbol in symbol_map else None
+        if y1 == y2:  # Avancer tout droit
+            if x2 == x1 + direction and not grille[x2][y2]:
+                return True
+        return False
