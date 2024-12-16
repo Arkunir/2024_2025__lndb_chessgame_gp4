@@ -94,13 +94,29 @@ def display_winner(winner):
         screen.blit(text, text_rect)
         pygame.display.flip()
 
+def display_draw(message):
+    font = pygame.font.Font(None, 72)
+    text = font.render(message, True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        screen.fill((0, 0, 0))  # Screen background black
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+
 running = True
 selected_square = None
+game_over = False  # Flag to check if the game is over
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
             pos = pygame.mouse.get_pos()
             clicked_square = get_square_under_mouse(pos)
             if selected_square is None:
@@ -117,10 +133,17 @@ while running:
                     board.push(move)
                 selected_square = None
 
-    # Vérification de la fin de partie (échec et mat)
+    # Vérification de la fin de partie (échec et mat, pat ou trois répétitions)
     if board.is_checkmate():
         winner = "Les blancs" if board.turn == chess.BLACK else "Les noirs"
+        game_over = True
         display_winner(winner)
+    elif board.is_stalemate():  # Vérification du pat
+        game_over = True
+        display_draw("Match nul! (Pat)")
+    elif board.is_repetition(3):  # Vérification de la règle des trois répétitions
+        game_over = True
+        display_draw("Match nul! (Trois répétitions)")
 
     draw_board()
     draw_pieces()
