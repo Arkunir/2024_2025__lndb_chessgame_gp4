@@ -58,18 +58,17 @@ def is_check():
     return board.is_check()
 
 def display_checkmate_message():
-    screen.fill((0, 0, 0))  # Fond noir pour l'écran de fin
+    screen.fill((0, 0, 0))  
     font = pygame.font.Font(None, 74)
-    text = font.render("Échec et Mat!", True, (255, 255, 255))  # Texte blanc
-    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 3))  # Centrer le texte
+    text = font.render("Échec et Mat!", True, (255, 255, 255))  
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 3))  
 
 def display_winner():
-    winner = "Noirs" if board.turn else "Blancs"  # Si c'est le tour des blancs, ce sont les noirs qui ont perdu
+    winner = "Noirs" if board.turn else "Blancs"  
     font = pygame.font.Font(None, 50)
-    winner_text = font.render(f"Gagnant : {winner}", True, (255, 255, 255))  # Texte blanc
-    screen.blit(winner_text, (WIDTH // 2 - winner_text.get_width() // 2, HEIGHT // 2 + 50))  # Centrer le texte
+    winner_text = font.render(f"Gagnant : {winner}", True, (255, 255, 255))  
+    screen.blit(winner_text, (WIDTH // 2 - winner_text.get_width() // 2, HEIGHT // 2 + 50))  
 
-# Main loop
 running = True
 selected_square = None
 while running:
@@ -91,7 +90,7 @@ while running:
 
     if is_checkmate():
         display_checkmate_message()
-        display_winner()  # Afficher le gagnant si l'échec et mat est détecté
+        display_winner()  
     else:
         draw_board()
         draw_pieces()
