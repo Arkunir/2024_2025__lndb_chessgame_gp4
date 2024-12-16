@@ -25,10 +25,10 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
 ### Utilisation:
 
 - Installer : Python
-    Dans le terminal installer pygame en faisant:
-      ``pip install pygame``
-    Dans le terminal installer pygame en faisant:
-      ``pip install python_chess``
+    Dans le terminal installer pygame en faisant:  
+      ``pip install pygame``  
+    Dans le terminal installer pygame en faisant:  
+      ``pip install python_chess``  
 
 - Lancer le programe main.py
 
