@@ -38,6 +38,6 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
 
 Ce projet a été développé par : Baranovskii Roman, Bideau James, Bonnière Tristan, Broage Théodore
 
-# Licence:
+### Licence:
 
 Ce projet est sous licence libre. Vous êtes libre de l'utiliser, de le modifier et de le distribuer, tant que vous respectez les termes de la licence.
