@@ -16,8 +16,6 @@ PIECE_FILES = {
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
 }
 
-PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
-
 def load_pieces():
     pieces = {}
     for piece, filename in PIECE_FILES.items():
@@ -53,32 +51,25 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def promote_pawn(selected_square):
-    menu_width, menu_height = 200, 150
-    menu_x = WIDTH // 2 - menu_width // 2
-    menu_y = HEIGHT // 2 - menu_height // 2
-    font = pygame.font.Font(None, 36)
-    options = ['Dame', 'Tour', 'Cavalier', 'Fou']
+def is_checkmate():
+    return board.is_checkmate()
 
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = event.pos
-                if menu_x <= mouse_x <= menu_x + menu_width:
-                    for i, option in enumerate(options):
-                        option_y = menu_y + i * (menu_height // 4)
-                        if option_y <= mouse_y <= option_y + menu_height // 4:
-                            return PROMOTION_OPTIONS[i]
+def is_check():
+    return board.is_check()
 
-        pygame.draw.rect(screen, (50, 50, 50), (menu_x, menu_y, menu_width, menu_height))
-        for i, option in enumerate(options):
-            text = font.render(option, True, (255, 255, 255))
-            screen.blit(text, (menu_x + 10, menu_y + i * (menu_height // 4) + 10))
-        pygame.display.flip()
+def display_checkmate_message():
+    screen.fill((0, 0, 0))  # Fond noir pour l'écran de fin
+    font = pygame.font.Font(None, 74)
+    text = font.render("Échec et Mat!", True, (255, 255, 255))  # Texte blanc
+    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 3))  # Centrer le texte
 
+def display_winner():
+    winner = "Noirs" if board.turn else "Blancs"  # Si c'est le tour des blancs, ce sont les noirs qui ont perdu
+    font = pygame.font.Font(None, 50)
+    winner_text = font.render(f"Gagnant : {winner}", True, (255, 255, 255))  # Texte blanc
+    screen.blit(winner_text, (WIDTH // 2 - winner_text.get_width() // 2, HEIGHT // 2 + 50))  # Centrer le texte
+
+# Main loop
 running = True
 selected_square = None
 while running:
@@ -88,20 +79,23 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             clicked_square = get_square_under_mouse(pos)
+
             if selected_square is None:
                 if board.piece_at(clicked_square):
                     selected_square = clicked_square
             else:
                 move = chess.Move(selected_square, clicked_square)
                 if move in board.legal_moves:
-                    if board.piece_at(selected_square).symbol().lower() == 'p' and (chess.square_rank(clicked_square) == 0 or chess.square_rank(clicked_square) == 7):
-                        promotion = promote_pawn(selected_square)
-                        move.promotion = chess.PIECE_SYMBOLS.index(promotion)
                     board.push(move)
                 selected_square = None
 
-    draw_board()
-    draw_pieces()
+    if is_checkmate():
+        display_checkmate_message()
+        display_winner()  # Afficher le gagnant si l'échec et mat est détecté
+    else:
+        draw_board()
+        draw_pieces()
+
     pygame.display.flip()
 
 pygame.quit()
