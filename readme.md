@@ -23,3 +23,13 @@ Clonez le dépôt : Ouvrez le liens puis cloner le code grâce à [ce dépôt](h
 Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre machine.
 
 ### Utilisation:
+
+- Installer : Python
+    Dans le terminal installer pygame en faisant:  
+      ``pip install pygame``  
+    Dans le terminal installer pygame en faisant:  
+      ``pip install python_chess``  
+
+- Lancer le programe main.py
+
+- Bon jeu!!
