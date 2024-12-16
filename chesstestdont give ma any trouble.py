@@ -79,6 +79,21 @@ def promote_pawn():
             screen.blit(text, (menu_x + 10, menu_y + i * (menu_height // 4) + 10))
         pygame.display.flip()
 
+def display_winner(winner):
+    font = pygame.font.Font(None, 72)
+    text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        screen.fill((0, 0, 0))  # Screen background black
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+
 running = True
 selected_square = None
 while running:
@@ -101,6 +116,11 @@ while running:
                         move.promotion = promotion
                     board.push(move)
                 selected_square = None
+
+    # Vérification de la fin de partie (échec et mat)
+    if board.is_checkmate():
+        winner = "Les blancs" if board.turn == chess.BLACK else "Les noirs"
+        display_winner(winner)
 
     draw_board()
     draw_pieces()
