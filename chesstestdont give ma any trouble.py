@@ -16,6 +16,8 @@ PIECE_FILES = {
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
 }
 
+PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
+
 def load_pieces():
     pieces = {}
     for piece, filename in PIECE_FILES.items():
@@ -51,50 +53,163 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def is_checkmate():
-    return board.is_checkmate()
+def promote_pawn():
+    menu_width, menu_height = 200, 150
+    menu_x = WIDTH // 2 - menu_width // 2
+    menu_y = HEIGHT // 2 - menu_height // 2
+    font = pygame.font.Font(None, 36)
+    options = ['Dame', 'Tour', 'Cavalier', 'Fou']
 
-def is_check():
-    return board.is_check()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if menu_x <= mouse_x <= menu_x + menu_width:
+                    for i, option in enumerate(options):
+                        option_y = menu_y + i * (menu_height // 4)
+                        if option_y <= mouse_y <= option_y + menu_height // 4:
+                            return PROMOTION_OPTIONS[i]
 
-def display_checkmate_message():
-    screen.fill((0, 0, 0))  
-    font = pygame.font.Font(None, 74)
-    text = font.render("Échec et Mat!", True, (255, 255, 255))  
-    screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 3))  
+        pygame.draw.rect(screen, (50, 50, 50), (menu_x, menu_y, menu_width, menu_height))
+        for i, option in enumerate(options):
+            text = font.render(option, True, (255, 255, 255))
+            screen.blit(text, (menu_x + 10, menu_y + i * (menu_height // 4) + 10))
+        pygame.display.flip()
 
-def display_winner():
-    winner = "Noirs" if board.turn else "Blancs"  
-    font = pygame.font.Font(None, 50)
-    winner_text = font.render(f"Gagnant : {winner}", True, (255, 255, 255))  
-    screen.blit(winner_text, (WIDTH // 2 - winner_text.get_width() // 2, HEIGHT // 2 + 50))  
+def display_winner(winner):
+    font = pygame.font.Font(None, 72)
+    text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
+    
+    # Create "Rejouer" button
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT // 2 + 100
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+    
+    # Create "Quitter" button
+    quit_button_y = HEIGHT // 2 + 200
+    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):
+                    return "replay"
+                elif quit_button_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    exit()
+
+        screen.fill((0, 0, 0))  # Background black
+        screen.blit(text, text_rect)
+
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
+        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
+
+        # Draw the "Quitter" button (red with white text)
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
+        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
+        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
+
+        pygame.display.flip()
+
+def display_draw(message):
+    font = pygame.font.Font(None, 72)
+    text = font.render(message, True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
+    # Create "Rejouer" button
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT // 2 + 100
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+    
+    # Create "Quitter" button
+    quit_button_y = HEIGHT // 2 + 200
+    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):
+                    return "replay"
+                elif quit_button_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    exit()
+
+        screen.fill((0, 0, 0))  # Background black
+        screen.blit(text, text_rect)
+
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
+        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
+
+        # Draw the "Quitter" button (red with white text)
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
+        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
+        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
+
+        pygame.display.flip()
+
+def reset_game():
+    global board, game_over
+    board = chess.Board()  # Reset the board to the initial state
+    game_over = False  # Set game_over flag to False
+
+# Main loop
 running = True
 selected_square = None
+game_over = False  # Flag to check if the game is over
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
             pos = pygame.mouse.get_pos()
             clicked_square = get_square_under_mouse(pos)
-
             if selected_square is None:
                 if board.piece_at(clicked_square):
                     selected_square = clicked_square
             else:
                 move = chess.Move(selected_square, clicked_square)
                 if move in board.legal_moves:
+                    piece = board.piece_at(selected_square)
+                    if piece.symbol().lower() == 'p' and (chess.square_rank(clicked_square) == 0 or chess.square_rank(clicked_square) == 7):
+                        # Promotion logic
+                        promotion = promote_pawn()  # Call the promote_pawn function for user input
+                        move.promotion = promotion
                     board.push(move)
                 selected_square = None
 
-    if is_checkmate():
-        display_checkmate_message()
-        display_winner()  
-    else:
-        draw_board()
-        draw_pieces()
+    # Vérification de la fin de partie (échec et mat, pat ou trois répétitions)
+    if board.is_checkmate():
+        winner = "Les blancs" if board.turn == chess.BLACK else "Les noirs"
+        game_over = True
+        if display_winner(winner) == "replay":
+            reset_game()  # Reset the game if "Rejouer" is clicked
+    elif board.is_stalemate():  # Vérification du pat
+        game_over = True
+        if display_draw("Match nul! (Pat)") == "replay":
+            reset_game()  # Reset the game if "Rejouer" is clicked
+    elif board.is_repetition(3):  # Vérification de la règle des trois répétitions
+        game_over = True
+        if display_draw("Match nul! (Trois répétitions)") == "replay":
+            reset_game()  # Reset the game if "Rejouer" is clicked
 
+    draw_board()
+    draw_pieces()
     pygame.display.flip()
 
 pygame.quit()
