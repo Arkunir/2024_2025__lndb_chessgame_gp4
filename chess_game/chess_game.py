@@ -1,6 +1,5 @@
 import tkinter as tk
 
-# Classe pour représenter une pièce
 class Piece:
     def __init__(self, color, symbol):
         self.color = color
@@ -20,17 +19,14 @@ class Pawn(Piece):
         direction = -1 if self.color == 'white' else 1
         dx, dy = end[0] - start[0], end[1] - start[1]
 
-        # Mouvement d'une case en avant
         if dx == direction and dy == 0 and board[end[0]][end[1]] is None:
             return True
 
-        # Mouvement de deux cases en avant (si non encore déplacé)
         if dx == 2 * direction and dy == 0 and not self.has_moved:
             middle = (start[0] + end[0]) // 2
             if board[middle][start[1]] is None and board[end[0]][end[1]] is None:
                 return True
 
-        # Capture en diagonale
         if dx == direction and abs(dy) == 1 and board[end[0]][end[1]] is not None:
             target_piece = board[end[0]][end[1]]
             if target_piece.color != self.color:
@@ -90,7 +86,6 @@ class King(Piece):
         return dx <= 1 and dy <= 1
 
 
-# Usine pour créer des pièces
 class PieceFactory:
     @staticmethod
     def create_piece(char):
@@ -110,37 +105,34 @@ class PieceFactory:
             return None
 
 
-# Classe pour représenter le plateau de jeu
 class Plateau:
     def __init__(self, root):
         self.root = root
         self.canvas = tk.Canvas(root, width=480, height=480)
         self.canvas.pack()
 
-        # Initialiser les pièces sur le plateau
         self.board = self.initialize_board()
         self.selected_piece = None
         self.selected_position = None
-        self.current_turn = 'white'  # Le tour commence avec les blancs
+        self.current_turn = 'white' 
 
-        # Lier les clics de la souris
         self.canvas.bind("<Button-1>", self.on_click)
 
     def initialize_board(self):
         layout = [
-            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],  # Ligne 0 (noir)
-            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],  # Ligne 1 (noir)
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  # Ligne 2
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  # Ligne 3
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  # Ligne 4
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  # Ligne 5
-            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],  # Ligne 6 (blanc)
-            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],  # Ligne 7 (blanc)
+            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],  
+            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],  
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], 
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  
+            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],  
+            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],  
         ]
         return [[PieceFactory.create_piece(char) for char in row] for row in layout]
 
     def display(self):
-        self.canvas.delete("all")  # Efface tout pour redessiner
+        self.canvas.delete("all")  
         case_size = 60
         for i in range(8):
             for j in range(8):
@@ -149,16 +141,14 @@ class Plateau:
                 x2, y2 = (j + 1) * case_size, (i + 1) * case_size
                 self.canvas.create_rectangle(x1, y1, x2, y2, fill=color)
 
-                # Dessiner la pièce si elle existe
                 piece = self.board[i][j]
                 if piece:
                     self.canvas.create_text(
                         x1 + case_size / 2, y1 + case_size / 2,
-                        text=piece.symbol, font=("Arial", 32),  # Ajuster la taille de la police
-                        fill="black"  # Toutes les pièces seront noires
+                        text=piece.symbol, font=("Arial", 32), 
+                        fill="black"
                     )
 
-        # Afficher quel est le tour actuel
         self.canvas.create_text(240, 500, text=f"C'est au tour des {'Blancs' if self.current_turn == 'white' else 'Noirs'}", font=("Arial", 16))
 
     def on_click(self, event):
@@ -170,18 +160,15 @@ class Plateau:
             end = (y, x)
             piece = self.selected_piece
 
-            # Vérifier que la pièce appartient au joueur dont c'est le tour
             if piece.color != self.current_turn:
                 return
 
             try:
                 if piece.is_valid_move(start, end, self.board):
-                    # Déplacer la pièce
                     self.board[end[0]][end[1]] = piece
                     self.board[start[0]][start[1]] = None
                     piece.move(start, end)
 
-                    # Passer au tour suivant
                     self.switch_turn()
                     self.selected_piece = None
                     self.selected_position = None
@@ -205,7 +192,6 @@ class Plateau:
         self.current_turn = 'black' if self.current_turn == 'white' else 'white'
 
 
-# Fonction principale pour démarrer l'application
 def main():
     root = tk.Tk()
     root.title("Jeu d'échecs")
