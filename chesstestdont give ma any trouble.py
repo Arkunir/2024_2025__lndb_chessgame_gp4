@@ -53,7 +53,7 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def promote_pawn(selected_square):
+def promote_pawn():
     menu_width, menu_height = 200, 150
     menu_x = WIDTH // 2 - menu_width // 2
     menu_y = HEIGHT // 2 - menu_height // 2
@@ -97,8 +97,8 @@ while running:
                     piece = board.piece_at(selected_square)
                     if piece.symbol().lower() == 'p' and (chess.square_rank(clicked_square) == 0 or chess.square_rank(clicked_square) == 7):
                         # Promotion logic
-                        promotion = promote_pawn(selected_square)
-                        move.promotion = chess.PIECE_SYMBOLS.index(promotion)
+                        promotion = promote_pawn()  # Call the promote_pawn function for user input
+                        move.promotion = promotion
                     board.push(move)
                 selected_square = None
 
