@@ -35,7 +35,7 @@ fenetre.title("Roulette des pièces d'échecs")
 fenetre.geometry("300x250")
 
 # Titre de la fenêtre
-label_titre = tk.Label(fenetre, text="Cliquez pour choisir une pièce d'échecs", font=("Arial", 14))
+label_titre = tk.Label(fenetre, text="Choisissez une pièce d'échecs", font=("Arial", 14))
 label_titre.pack(pady=20)
 
 # Bouton pour choisir une pièce
