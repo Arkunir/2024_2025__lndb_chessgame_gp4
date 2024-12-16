@@ -82,33 +82,74 @@ def promote_pawn():
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
     text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
     
+    # Create "Rejouer" button
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT // 2 + 100
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):
+                    return "replay"
 
-        screen.fill((0, 0, 0))  # Screen background black
+        screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
+
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
+        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
+
         pygame.display.flip()
 
 def display_draw(message):
     font = pygame.font.Font(None, 72)
     text = font.render(message, True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    
+
+    # Create "Rejouer" button
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT // 2 + 100
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):
+                    return "replay"
 
-        screen.fill((0, 0, 0))  # Screen background black
+        screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
+
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
+        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
+
         pygame.display.flip()
 
+def reset_game():
+    global board, game_over
+    board = chess.Board()  # Reset the board to the initial state
+    game_over = False  # Set game_over flag to False
+
+def change_side():
+    global board
+    # Change the side by switching to the opposite color
+    board.turn = chess.BLACK if board.turn == chess.WHITE else chess.WHITE
+
+# Main loop
 running = True
 selected_square = None
 game_over = False  # Flag to check if the game is over
@@ -137,16 +178,18 @@ while running:
     if board.is_checkmate():
         winner = "Les blancs" if board.turn == chess.BLACK else "Les noirs"
         game_over = True
-        display_winner(winner)
+        if display_winner(winner) == "replay":
+            reset_game()  # Reset the game if "Rejouer" is clicked
     elif board.is_stalemate():  # Vérification du pat
         game_over = True
-        display_draw("Match nul! (Pat)")
+        if display_draw("Match nul! (Pat)") == "replay":
+            reset_game()  # Reset the game if "Rejouer" is clicked
     elif board.is_repetition(3):  # Vérification de la règle des trois répétitions
         game_over = True
-        display_draw("Match nul! (Trois répétitions)")
+        if display_draw("Match nul! (Trois répétitions)") == "replay":
+            reset_game()  # Reset the game if "Rejouer" is clicked
 
-    draw_board()
-    draw_pieces()
-    pygame.display.flip()
-
-pygame.quit()
+    # Draw the "Change Side" button (white with black text)
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT
