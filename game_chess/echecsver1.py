@@ -144,11 +144,6 @@ def reset_game():
     board = chess.Board()  # Reset the board to the initial state
     game_over = False  # Set game_over flag to False
 
-def change_side():
-    global board
-    # Change the side by switching to the opposite color
-    board.turn = chess.BLACK if board.turn == chess.WHITE else chess.WHITE
-
 # Main loop
 running = True
 selected_square = None
@@ -189,7 +184,8 @@ while running:
         if display_draw("Match nul! (Trois répétitions)") == "replay":
             reset_game()  # Reset the game if "Rejouer" is clicked
 
-    # Draw the "Change Side" button (white with black text)
-    button_width, button_height = 200, 60
-    button_x = WIDTH // 2 - button_width // 2
-    button_y = HEIGHT
+    draw_board()
+    draw_pieces()
+    pygame.display.flip()
+
+pygame.quit()
