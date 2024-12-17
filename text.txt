@@ -24,3 +24,5 @@ la cadence
  à 4
  à 2 FAIT
  chess 960 
+ pieces speciales
+ 
