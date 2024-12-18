@@ -3,6 +3,7 @@ import chess
 import random
 import tkinter as tk
 from tkinter import messagebox
+import time
 
 # Initialisation de pygame
 pygame.init()
@@ -30,8 +31,14 @@ pygame.display.set_caption("Jeu d'échecs")
 # Initialisation de l'état de la partie
 selected_square = None
 game_over = False
+ai_white_level = 1  # Niveau de l'IA pour les blancs
+ai_black_level = 1  # Niveau de l'IA pour les noirs
 
-def start_game(mode):
+def start_game(mode, white_level=None, black_level=None):
+    global ai_white_level, ai_black_level
+    if white_level and black_level:
+        ai_white_level = white_level  # Niveau de l'IA pour les blancs
+        ai_black_level = black_level  # Niveau de l'IA pour les noirs
     global game_over
     game_over = False
     if mode == "AI":
@@ -202,11 +209,14 @@ def reset_game():
     board = chess.Board()  # Reset the board to the initial state
     game_over = False  # Set game_over flag to False
 
-def random_move():
-    # Get a list of all legal moves
+def random_move(level=1):
+    # Adjust the randomness of the move selection based on the AI level
     legal_moves = list(board.legal_moves)
     
-    # Choose a random move
+    if level == 1:
+        return random.choice(legal_moves)  # Niveau facile (choix totalement aléatoire)
+    
+    # Niveau 2-5 (on peut ajouter plus de sophistication dans les niveaux plus élevés)
     return random.choice(legal_moves)
 
 # Fonction IA
@@ -233,9 +243,9 @@ def play_with_ai():
                             selected_square = -1
                             turn = not turn
 
-        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire avec un délai de 0,2 seconde
+        # Si c'est le tour de l'IA, effectuer un mouvement avec délai et en fonction du niveau
         if not turn:
-            move = random_move()
+            move = random_move(ai_white_level)
             board.push(move)
             pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
             turn = not turn
@@ -257,14 +267,15 @@ def play_with_two_ais():
                 pygame.quit()
                 exit()
 
-        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire avec un délai de 0,2 seconde
-        if not turn:
-            move = random_move()
+        # Si c'est le tour de l'IA blanche, effectuer un mouvement avec son niveau
+        if turn:
+            move = random_move(ai_white_level)
             board.push(move)
             pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
             turn = not turn
-        elif turn:
-            move = random_move()
+        # Si c'est le tour de l'IA noire, effectuer un mouvement avec son niveau
+        else:
+            move = random_move(ai_black_level)
             board.push(move)
             pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
             turn = not turn
@@ -283,13 +294,50 @@ def menu_window():
 
     def on_mode_select(mode):
         window.destroy()  # Fermer la fenêtre Tkinter
-        start_game(mode)  # Lancer le jeu
+        if mode in ["AI", "2 Players", "2 AI"]:  # Si le mode implique l'IA
+            level_selection_window(mode)  # Afficher la fenêtre de sélection de niveau
+        else:
+            start_game(mode)  # Lancer le jeu pour les autres modes
 
     tk.Button(window, text="Contre l'IA", font=("Arial", 16), command=lambda: on_mode_select("AI")).pack(pady=10)
     tk.Button(window, text="2 Joueurs", font=("Arial", 16), command=lambda: on_mode_select("2 Players")).pack(pady=10)
-    tk.Button(window, text="2 IA", font=("Arial", 16), command=lambda: on_mode_select("2 AI")).pack(pady=10)  # Nouveau bouton
+    tk.Button(window, text="2 IA", font=("Arial", 16), command=lambda: on_mode_select("2 AI")).pack(pady=10)
 
     window.mainloop()  # Lancer la boucle Tkinter
 
-# Lancer le menu
+def level_selection_window(mode):
+    window = tk.Tk()
+    window.title("Sélection du niveau de l'IA")
+    
+    tk.Label(window, text="Choisissez le niveau de l'IA pour les blancs", font=("Arial", 18)).pack(pady=20)
+    
+    def on_white_level_select(level):
+        global ai_white_level
+        ai_white_level = level
+        level_selection_for_black(window)
+
+    for level in range(1, 6):
+        tk.Button(window, text=f"Niveau {level}", font=("Arial", 16), command=lambda level=level: on_white_level_select(level)).pack(pady=10)
+    
+    window.mainloop()  # Lancer la fenêtre Tkinter
+
+def level_selection_for_black(previous_window):
+    previous_window.destroy()  # Fermer la fenêtre précédente
+
+    window = tk.Tk()
+    window.title("Sélection du niveau de l'IA")
+    
+    tk.Label(window, text="Choisissez le niveau de l'IA pour les noirs", font=("Arial", 18)).pack(pady=20)
+    
+    def on_black_level_select(level):
+        global ai_black_level
+        ai_black_level = level
+        start_game("AI", ai_white_level, ai_black_level)
+
+    for level in range(1, 6):
+        tk.Button(window, text=f"Niveau {level}", font=("Arial", 16), command=lambda level=level: on_black_level_select(level)).pack(pady=10)
+    
+    window.mainloop()  # Lancer la fenêtre Tkinter
+
+# Démarrer la fenêtre de menu
 menu_window()
