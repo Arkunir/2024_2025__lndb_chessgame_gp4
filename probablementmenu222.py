@@ -27,8 +27,19 @@ PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jeu d'échecs")
 
-def start_game():
-    pass
+# Initialisation de l'état de la partie
+selected_square = None
+game_over = False
+
+def start_game(mode):
+    global game_over
+    game_over = False
+    if mode == "AI":
+        play_with_ai()
+    elif mode == "2 Players":
+        play_with_two_players()
+    elif mode == "2 AI":
+        play_with_two_ais()  # Nouveau mode où 2 IA s'affrontent
 
 def load_pieces():
     pieces = {}
@@ -63,13 +74,13 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def promote_pawn():
+def promote_pawn(square):
     menu_width, menu_height = 200, 150
     menu_x = WIDTH // 2 - menu_width // 2
     menu_y = HEIGHT // 2 - menu_height // 2
     font = pygame.font.Font(None, 36)
     options = ['Dame', 'Tour', 'Cavalier', 'Fou']
-
+    
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -88,6 +99,18 @@ def promote_pawn():
             text = font.render(option, True, (255, 255, 255))
             screen.blit(text, (menu_x + 10, menu_y + i * (menu_height // 4) + 10))
         pygame.display.flip()
+
+def check_game_over():
+    global game_over
+    if board.is_checkmate():
+        winner = "Blancs" if board.turn == chess.BLACK else "Noirs"
+        display_winner(winner)
+        game_over = True
+    elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves() or board.is_variant_draw():
+        display_draw("Égalité")
+        game_over = True
+    elif board.is_check():  # Si il y a échec, on affiche ça en attendant qu'un coup soit joué.
+        pass
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
@@ -153,7 +176,8 @@ def display_draw(message):
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
-                    return "replay"
+                    reset_game()  # Réinitialiser la partie avant de recommencer
+                    return  # Revenir au menu
                 elif quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
                     exit()
@@ -209,11 +233,43 @@ def play_with_ai():
                             selected_square = -1
                             turn = not turn
 
-        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire
+        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire avec un délai de 0,2 seconde
         if not turn:
             move = random_move()
             board.push(move)
+            pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
+            turn = not turn
 
+        check_game_over()  # Vérification si la partie est terminée
+        draw_board()
+        draw_pieces()
+        pygame.display.flip()
+
+# Nouveau mode : 2 IA s'affrontent
+def play_with_two_ais():
+    global board, game_over
+    game_over = False
+    turn = True  # True: White's turn, False: Black's turn
+
+    while not game_over:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire avec un délai de 0,2 seconde
+        if not turn:
+            move = random_move()
+            board.push(move)
+            pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
+            turn = not turn
+        elif turn:
+            move = random_move()
+            board.push(move)
+            pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
+            turn = not turn
+
+        check_game_over()  # Vérification si la partie est terminée
         draw_board()
         draw_pieces()
         pygame.display.flip()
@@ -231,6 +287,7 @@ def menu_window():
 
     tk.Button(window, text="Contre l'IA", font=("Arial", 16), command=lambda: on_mode_select("AI")).pack(pady=10)
     tk.Button(window, text="2 Joueurs", font=("Arial", 16), command=lambda: on_mode_select("2 Players")).pack(pady=10)
+    tk.Button(window, text="2 IA", font=("Arial", 16), command=lambda: on_mode_select("2 AI")).pack(pady=10)  # Nouveau bouton
 
     window.mainloop()  # Lancer la boucle Tkinter
 
