@@ -3,7 +3,6 @@ import chess
 import random
 import tkinter as tk
 from tkinter import messagebox
-import time
 
 # Initialisation de pygame
 pygame.init()
@@ -31,22 +30,8 @@ pygame.display.set_caption("Jeu d'échecs")
 # Initialisation de l'état de la partie
 selected_square = None
 game_over = False
-ai_white_level = 1  # Niveau de l'IA pour les blancs
-ai_black_level = 1  # Niveau de l'IA pour les noirs
-
-def start_game(mode, white_level=None, black_level=None):
-    global ai_white_level, ai_black_level
-    if white_level and black_level:
-        ai_white_level = white_level  # Niveau de l'IA pour les blancs
-        ai_black_level = black_level  # Niveau de l'IA pour les noirs
-    global game_over
-    game_over = False
-    if mode == "AI":
-        play_with_ai()
-    elif mode == "2 Players":
-        play_with_two_players()
-    elif mode == "2 AI":
-        play_with_two_ais()  # Nouveau mode où 2 IA s'affrontent
+ai_level_white = 1  # Niveau de l'IA pour les Blancs
+ai_level_black = 1  # Niveau de l'IA pour les Noirs
 
 def load_pieces():
     pieces = {}
@@ -204,140 +189,109 @@ def display_draw(message):
 
         pygame.display.flip()
 
-def reset_game():
-    global board, game_over
-    board = chess.Board()  # Reset the board to the initial state
-    game_over = False  # Set game_over flag to False
-
-def random_move(level=1):
-    # Adjust the randomness of the move selection based on the AI level
-    legal_moves = list(board.legal_moves)
-    
-    if level == 1:
-        return random.choice(legal_moves)  # Niveau facile (choix totalement aléatoire)
-    
-    # Niveau 2-5 (on peut ajouter plus de sophistication dans les niveaux plus élevés)
-    return random.choice(legal_moves)
-
-# Fonction IA
-def play_with_ai():
-    global board, game_over
-    game_over = False
-    turn = True  # True: White's turn, False: Black's turn
-
+def play_with_ai(ai_level):
+    global selected_square
     while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-                square = get_square_under_mouse(event.pos)
-                if square != -1:
-                    piece = board.piece_at(square)
-                    if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
-                        selected_square = square
-                    elif selected_square != -1:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if not board.is_game_over():
+                    square = get_square_under_mouse(event.pos)
+                    if selected_square is None:
+                        if board.piece_at(square) and board.turn == chess.WHITE:
+                            selected_square = square
+                    else:
                         move = chess.Move(selected_square, square)
                         if move in board.legal_moves:
                             board.push(move)
-                            selected_square = -1
-                            turn = not turn
+                            selected_square = None
+                        else:
+                            selected_square = None
+        
+        if board.turn == chess.BLACK:
+            # IA fait un mouvement aléatoire pour le moment
+            ai_move = random.choice(list(board.legal_moves))
+            board.push(ai_move)
 
-        # Si c'est le tour de l'IA, effectuer un mouvement avec délai et en fonction du niveau
-        if not turn:
-            move = random_move(ai_white_level)
-            board.push(move)
-            pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
-            turn = not turn
-
-        check_game_over()  # Vérification si la partie est terminée
+        check_game_over()
+        screen.fill((255, 255, 255))
         draw_board()
         draw_pieces()
         pygame.display.flip()
 
-# Nouveau mode : 2 IA s'affrontent
-def play_with_two_ais():
-    global board, game_over
-    game_over = False
-    turn = True  # True: White's turn, False: Black's turn
+def play_with_two_players():
+    global selected_square
+    while not game_over:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if not board.is_game_over():
+                    square = get_square_under_mouse(event.pos)
+                    if selected_square is None:
+                        if board.piece_at(square) and (board.turn == chess.WHITE or board.turn == chess.BLACK):
+                            selected_square = square
+                    else:
+                        move = chess.Move(selected_square, square)
+                        if move in board.legal_moves:
+                            board.push(move)
+                            selected_square = None
+                        else:
+                            selected_square = None
+        check_game_over()
+        screen.fill((255, 255, 255))
+        draw_board()
+        draw_pieces()
+        pygame.display.flip()
 
+def play_with_two_ais(ai_level_white, ai_level_black):
+    global selected_square
     while not game_over:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
 
-        # Si c'est le tour de l'IA blanche, effectuer un mouvement avec son niveau
-        if turn:
-            move = random_move(ai_white_level)
-            board.push(move)
-            pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
-            turn = not turn
-        # Si c'est le tour de l'IA noire, effectuer un mouvement avec son niveau
-        else:
-            move = random_move(ai_black_level)
-            board.push(move)
-            pygame.time.delay(200)  # Délai de 0,2 seconde (200 millisecondes)
-            turn = not turn
+        # IA des Blancs
+        if board.turn == chess.WHITE:
+            ai_move = random.choice(list(board.legal_moves))  # IA des Blancs
+            board.push(ai_move)
+        
+        # IA des Noirs
+        elif board.turn == chess.BLACK:
+            ai_move = random.choice(list(board.legal_moves))  # IA des Noirs
+            board.push(ai_move)
 
-        check_game_over()  # Vérification si la partie est terminée
+        check_game_over()
+        screen.fill((255, 255, 255))
         draw_board()
         draw_pieces()
         pygame.display.flip()
 
-# Création de la fenêtre Tkinter pour le menu
+# Fonction principale pour ouvrir le menu du jeu
 def menu_window():
     window = tk.Tk()
     window.title("Menu du jeu d'échecs")
-    
+
     tk.Label(window, text="Choisissez un mode de jeu", font=("Arial", 24)).pack(pady=20)
 
     def on_mode_select(mode):
-        window.destroy()  # Fermer la fenêtre Tkinter
-        if mode in ["AI", "2 Players", "2 AI"]:  # Si le mode implique l'IA
-            level_selection_window(mode)  # Afficher la fenêtre de sélection de niveau
-        else:
-            start_game(mode)  # Lancer le jeu pour les autres modes
+        window.destroy()  # Fermer la fenêtre immédiatement
+        if mode == "AI":
+            ai_selection_window()  # Sélection du niveau de l'IA avant de commencer
+        elif mode == "2 Players":
+            start_game(mode)
+        elif mode == "2 IA":
+            ai_selection_window_for_2_ais()
 
-    tk.Button(window, text="Contre l'IA", font=("Arial", 16), command=lambda: on_mode_select("AI")).pack(pady=10)
-    tk.Button(window, text="2 Joueurs", font=("Arial", 16), command=lambda: on_mode_select("2 Players")).pack(pady=10)
-    tk.Button(window, text="2 IA", font=("Arial", 16), command=lambda: on_mode_select("2 AI")).pack(pady=10)
+    tk.Button(window, text="IA contre Joueur", font=("Arial", 18), command=lambda: on_mode_select("AI")).pack(pady=10)
+    tk.Button(window, text="2 Joueurs", font=("Arial", 18), command=lambda: on_mode_select("2 Players")).pack(pady=10)
+    tk.Button(window, text="2 IA", font=("Arial", 18), command=lambda: on_mode_select("2 IA")).pack(pady=10)
 
-    window.mainloop()  # Lancer la boucle Tkinter
+    window.mainloop()
 
-def level_selection_window(mode):
-    window = tk.Tk()
-    window.title("Sélection du niveau de l'IA")
-    
-    tk.Label(window, text="Choisissez le niveau de l'IA pour les blancs", font=("Arial", 18)).pack(pady=20)
-    
-    def on_white_level_select(level):
-        global ai_white_level
-        ai_white_level = level
-        level_selection_for_black(window)
-
-    for level in range(1, 6):
-        tk.Button(window, text=f"Niveau {level}", font=("Arial", 16), command=lambda level=level: on_white_level_select(level)).pack(pady=10)
-    
-    window.mainloop()  # Lancer la fenêtre Tkinter
-
-def level_selection_for_black(previous_window):
-    previous_window.destroy()  # Fermer la fenêtre précédente
-
-    window = tk.Tk()
-    window.title("Sélection du niveau de l'IA")
-    
-    tk.Label(window, text="Choisissez le niveau de l'IA pour les noirs", font=("Arial", 18)).pack(pady=20)
-    
-    def on_black_level_select(level):
-        global ai_black_level
-        ai_black_level = level
-        start_game("AI", ai_white_level, ai_black_level)
-
-    for level in range(1, 6):
-        tk.Button(window, text=f"Niveau {level}", font=("Arial", 16), command=lambda level=level: on_black_level_select(level)).pack(pady=10)
-    
-    window.mainloop()  # Lancer la fenêtre Tkinter
-
-# Démarrer la fenêtre de menu
+# Lancer le menu
 menu_window()
