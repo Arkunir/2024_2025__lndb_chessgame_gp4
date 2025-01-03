@@ -172,18 +172,113 @@ def display_draw(message):
 
 def reset_game():
     global board, game_over
-    board = chess.Board()  # Reset the board to the initial state
-    game_over = False  # Set game_over flag to False
+    board = chess.Board()  # Réinitialiser l'échiquier à l'état initial
+    game_over = False  # Remettre le flag de fin de jeu à False
 
 def random_move():
-    # Get a list of all legal moves
+    # Obtenir une liste de tous les coups légaux
     legal_moves = list(board.legal_moves)
     
-    # Choose a random move
+    # Choisir un coup aléatoire
     return random.choice(legal_moves)
 
 # Fonction IA
 def play_with_ai():
+    global board, game_over
+    game_over = False
+    turn = True  # True: White's turn, False: Black's turn
+    selected_square = -1  # Initialement aucune case sélectionnée
+
+    while not game_over:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+            # Gestion des clics de souris pour sélectionner et déplacer une pièce
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+                square = get_square_under_mouse(event.pos)
+                if square != -1:
+                    piece = board.piece_at(square)
+
+                    if selected_square == -1:  # Sélectionner une pièce
+                        if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
+                            selected_square = square
+                    else:  # Déplacer la pièce sélectionnée
+                        move = chess.Move(selected_square, square)
+
+                        # Vérifier si le mouvement est légal
+                        if move in board.legal_moves:
+                            board.push(move)
+                            selected_square = -1  # Réinitialiser la case sélectionnée
+                            turn = not turn  # Changer de joueur
+                        else:
+                            selected_square = -1  # Annuler la sélection si le mouvement est illégal
+
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
+
+        # Si c'est le tour de l'IA, effectuer un mouvement après un délai de 0,2 sec
+        if not turn:
+            pygame.time.delay(200)  # Délai de 0,2 seconde pour l'IA
+            move = random_move()
+            board.push(move)
+            turn = not turn  # Changer de joueur
+
+        # Vérifier la victoire ou match nul
+        if board.is_checkmate():
+            display_winner("Blanc" if turn else "Noir")
+            game_over = True
+        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
+            display_draw("Match nul!")
+            game_over = True
+
+def play_with_two_players():
+    global board, game_over
+    game_over = False
+    turn = True  # True: White's turn, False: Black's turn
+    selected_square = -1  # Initialement aucune case sélectionnée
+
+    while not game_over:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+            # Gestion des clics de souris pour sélectionner et déplacer une pièce
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+                square = get_square_under_mouse(event.pos)
+                if square != -1:
+                    piece = board.piece_at(square)
+
+                    if selected_square == -1:  # Sélectionner une pièce
+                        if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
+                            selected_square = square
+                    else:  # Déplacer la pièce sélectionnée
+                        move = chess.Move(selected_square, square)
+
+                        # Vérifier si le mouvement est légal
+                        if move in board.legal_moves:
+                            board.push(move)
+                            selected_square = -1  # Réinitialiser la case sélectionnée
+                            turn = not turn  # Changer de joueur
+                        else:
+                            selected_square = -1  # Annuler la sélection si le mouvement est illégal
+
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
+
+        # Vérifier la victoire ou match nul
+        if board.is_checkmate():
+            display_winner("Blanc" if turn else "Noir")
+            game_over = True
+        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
+            display_draw("Match nul!")
+            game_over = True
+
+def play_ia_vs_ia():
     global board, game_over
     game_over = False
     turn = True  # True: White's turn, False: Black's turn
@@ -193,50 +288,60 @@ def play_with_ai():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-                square = get_square_under_mouse(event.pos)
-                if square != -1:
-                    piece = board.piece_at(square)
-                    if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
-                        selected_square = square
-                    elif selected_square != -1:
-                        move = chess.Move(selected_square, square)
-                        if move in board.legal_moves:
-                            board.push(move)
-                            selected_square = -1
-                            turn = not turn
 
-        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire
-        if not turn:
-            move = random_move()
-            board.push(move)
+        # Si c'est le tour de l'IA, effectuer un mouvement après un délai de 0,2 sec
+        pygame.time.delay(200)  # Délai de 0,2 seconde pour l'IA
+
+        move = random_move()
+        board.push(move)
+        turn = not turn
 
         draw_board()
         draw_pieces()
         pygame.display.flip()
 
+        # Vérifier la victoire ou match nul
+        if board.is_checkmate():
+            display_winner("Blanc" if turn else "Noir")
+            game_over = True
+        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
+            display_draw("Match nul!")
+            game_over = True
+
 def start_game(mode):
+    global game_over
     if mode == "AI":
         play_with_ai()
     elif mode == "2 Players":
-        # Lancer le jeu en mode 2 joueurs
-        pass
+        play_with_two_players()  # Utiliser la fonction mode 2 joueurs
+    elif mode == "IA vs IA":
+        play_ia_vs_ia()  # Ajouter ce mode IA contre IA
 
 # Création de la fenêtre Tkinter pour le menu
 def menu_window():
     window = tk.Tk()
-    window.title("Menu du jeu d'échecs")
+    window.title("Menu de sélection")
+
+    # Définir une taille minimale pour la fenêtre
+    window.geometry("300x200")  # Fixer la taille de la fenêtre à 300x200 pixels
     
-    tk.Label(window, text="Choisissez un mode de jeu", font=("Arial", 24)).pack(pady=20)
+    def start_ai_game():
+        window.destroy()
+        start_game("AI")
+        
+    def start_two_player_game():
+        window.destroy()
+        start_game("2 Players")
+        
+    def start_ia_vs_ia_game():
+        window.destroy()
+        start_game("IA vs IA")
+    
+    tk.Button(window, text="Jouer contre l'IA", command=start_ai_game).pack(pady=10)
+    tk.Button(window, text="Jouer à 2 joueurs", command=start_two_player_game).pack(pady=10)
+    tk.Button(window, text="IA vs IA", command=start_ia_vs_ia_game).pack(pady=10)
+    
+    window.mainloop()
 
-    def on_mode_select(mode):
-        window.destroy()  # Fermer la fenêtre Tkinter
-        start_game(mode)  # Lancer le jeu
-
-    tk.Button(window, text="Contre l'IA", font=("Arial", 16), command=lambda: on_mode_select("AI")).pack(pady=10)
-    tk.Button(window, text="2 Joueurs", font=("Arial", 16), command=lambda: on_mode_select("2 Players")).pack(pady=10)
-
-    window.mainloop()  # Lancer la boucle Tkinter
-
-# Lancer le menu
+# Démarrer le menu
 menu_window()
