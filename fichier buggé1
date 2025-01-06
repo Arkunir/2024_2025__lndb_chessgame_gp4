@@ -187,6 +187,38 @@ def random_move():
         return None  # Aucun coup légal n'est possible
     return random.choice(legal_moves)
 
+def valid_pawn_move(board, start_square, end_square, color):
+    """Vérifie si un mouvement de pion est valide."""
+    direction = 1 if color == chess.WHITE else -1  # Direction du mouvement : 1 pour blanc, -1 pour noir
+    start_rank = chess.square_rank(start_square)
+    end_rank = chess.square_rank(end_square)
+
+    # Mouvement d'une case en avant
+    if end_square == start_square + 8 * direction:
+        if board.piece_at(end_square) is None:
+            return True
+
+    # Mouvement de deux cases au début du jeu
+    if (start_rank == 1 and color == chess.WHITE) or (start_rank == 6 and color == chess.BLACK):
+        if end_square == start_square + 16 * direction:
+            middle_square = start_square + 8 * direction
+            if board.piece_at(middle_square) is None and board.piece_at(end_square) is None:
+                return True
+
+    # Capture en diagonale
+    if abs(start_square - end_square) == 7 or abs(start_square - end_square) == 9:
+        if board.piece_at(end_square) and board.piece_at(end_square).color != color:
+            return True
+
+    return False
+
+def handle_pawn_promotion(board, square, color):
+    """Effectue la promotion du pion lorsqu'il atteint la dernière rangée."""
+    if color == chess.WHITE and chess.square_rank(square) == 7:  # Si le pion blanc atteint la rangée 7
+        board.push(chess.Move(square, square, promotion='Q'))  # Promotion en dame
+    elif color == chess.BLACK and chess.square_rank(square) == 0:  # Si le pion noir atteint la rangée 0
+        board.push(chess.Move(square, square, promotion='q'))  # Promotion en dame
+
 # Fonction IA
 def play_with_ai():
     global board, game_over
@@ -211,19 +243,16 @@ def play_with_ai():
                     else:  # Déplacer la pièce sélectionnée
                         move = chess.Move(selected_square, square)
 
-                        # Vérifier si le mouvement est légal
-                        if move in board.legal_moves:
+                        # Vérifier si le mouvement est légal pour les pions
+                        if valid_pawn_move(board, selected_square, square, chess.WHITE):
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
                             turn = not turn  # Passer au tour de l'IA
 
-                            # Vérifier la promotion des pions
+                            # Vérification de la promotion du pion
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
                                (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
-                                # Appeler la fonction de promotion
-                                promotion_piece = promote_pawn()  # Demander la promotion au joueur
-                                # Remplacer le pion par la pièce choisie
-                                board.push(chess.Move(square, square, promotion=promotion_piece))
+                                handle_pawn_promotion(board, square, chess.WHITE)
 
                         else:
                             selected_square = -1  # Annuler la sélection si le mouvement est illégal
@@ -238,28 +267,19 @@ def play_with_ai():
                 game_over = True
             else:
                 # Effectuer un coup aléatoire uniquement si la partie n'est pas terminée
-                if not (board.is_checkmate() or board.is_stalemate() or board.is_insufficient_material()):
-                    move = random_move()
-                    if move is not None:
-                        board.push(move)
-                        turn = not turn  # Passer au tour du joueur
-                    else:
-                        raise ValueError("Aucun coup légal n'est possible. Le jeu est terminé.")
-                else:
-                    game_over = True
+                move = random_move()
+                if move is not None:
+                    board.push(move)
+                    turn = not turn  # Passer au tour du joueur
+
+                    # Vérification de la promotion de l'IA (côté noir)
+                    last_move = board.peek()
+                    if last_move.promotion and (chess.square_rank(last_move.to_square) == 0):
+                        handle_pawn_promotion(board, last_move.to_square, chess.BLACK)
 
         draw_board()  # Dessiner le plateau
         draw_pieces()  # Dessiner les pièces
         pygame.display.flip()  # Mettre à jour l'affichage
-
-        # Vérifier la fin de partie après chaque coup
-        if board.is_checkmate():
-            winner = "Noir" if not turn else "Blanc"
-            display_winner(winner)
-            game_over = True
-        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
-            display_draw("Match nul!")
-            game_over = True
 
 def play_with_two_players():
     global board, game_over
