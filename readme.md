@@ -10,7 +10,9 @@ Ce programme est un jeu d'échec qui a plusieurs fonctionnalité tel que:
 - Différent mode de jeux :
     - à 4
     - à 2
-    - chess 960 
+    - chess 960
+    - jeu contre IA
+    - IA contre IA 
 
 - Possibilité de jouer avec un chronomètre
 
