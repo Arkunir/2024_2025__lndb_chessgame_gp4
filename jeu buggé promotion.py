@@ -60,56 +60,37 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def promote_pawn(color):
-    """
-    Affiche un menu déroulant pour choisir une pièce de promotion
-    et renvoie le type de pièce choisi, en tenant compte de la couleur.
-    
-    :param color: La couleur du joueur (True pour blanc, False pour noir).
-    :return: Constante de pièce de la bibliothèque `chess` (e.g., chess.QUEEN).
-    """
-    global screen
-    menu_open = True
+def promote_pawn():
+    """Fonction de promotion du pion."""
+    promoted_piece = None
+    choices = ['Q', 'R', 'N', 'B']  # Dame, Tour, Cavalier, Fou
+
+    # Afficher la fenêtre de sélection de la promotion
     font = pygame.font.Font(None, 36)
-    options = ["Queen", "Rook", "Bishop", "Knight"]
-    rects = []
+    text = font.render("Choisissez la pièce (Q: Dame, R: Tour, N: Cavalier, B: Fou)", True, (255, 255, 255))
+    screen.blit(text, (100, 100))
 
-    # Dessiner les options du menu
-    while menu_open:
-        screen.fill((0, 0, 0))  # Remplir l'écran de noir (ou une autre couleur de fond)
-
-        title = font.render("Select a piece for promotion:", True, (255, 255, 255))
-        screen.blit(title, (100, 50))  # Afficher le titre
-
-        # Dessiner les options et conserver leurs rectangles pour détection des clics
-        rects.clear()
-        for i, option in enumerate(options):
-            text = font.render(option, True, (255, 255, 255))
-            rect = text.get_rect(center=(200, 150 + i * 50))
-            rects.append((rect, option))
-            pygame.draw.rect(screen, (50, 50, 50), rect.inflate(20, 10))  # Fond des options
-            screen.blit(text, rect)  # Texte des options
-
-        pygame.display.flip()  # Mettre à jour l'affichage
-
-        # Gérer les événements
+    # Boucle pour choisir la promotion
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = event.pos
-                for rect, option in rects:
-                    if rect.collidepoint(pos):
-                        menu_open = False
-                        if option == "Queen":
-                            return chess.QUEEN if color else chess.QUEEN + 6  # Blanc ou noir
-                        elif option == "Rook":
-                            return chess.ROOK if color else chess.ROOK + 6
-                        elif option == "Bishop":
-                            return chess.BISHOP if color else chess.BISHOP + 6
-                        elif option == "Knight":
-                            return chess.KNIGHT if color else chess.KNIGHT + 6
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    promoted_piece = 'Q'  # Dame
+                elif event.key == pygame.K_r:
+                    promoted_piece = 'R'  # Tour
+                elif event.key == pygame.K_n:
+                    promoted_piece = 'N'  # Cavalier
+                elif event.key == pygame.K_b:
+                    promoted_piece = 'B'  # Fou
+
+                if promoted_piece:  # Si une pièce a été choisie, on ferme la fenêtre
+                    return promoted_piece
+
+        pygame.display.flip()  # Mettre à jour l'affichage
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
@@ -238,11 +219,11 @@ def play_with_ai():
 
                             # Vérifier la promotion des pions
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 1 or chess.square_rank(square) == 6):
+                               (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
                                 # Appeler la fonction de promotion
                                 promotion_piece = promote_pawn()  # Demander la promotion au joueur
                                 # Remplacer le pion par la pièce choisie
-                                board.push(chess.Move(selected_square, square, promotion=promotion_piece))
+                                board.push(chess.Move(square, square, promotion=promotion_piece))
 
                         else:
                             selected_square = -1  # Annuler la sélection si le mouvement est illégal
@@ -312,11 +293,11 @@ def play_with_two_players():
 
                             # Vérifier la promotion des pions
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 1 or chess.square_rank(square) == 6):
+                               (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
                                 # Appeler la fonction de promotion
                                 promotion_piece = promote_pawn()  # Demander la promotion au joueur
                                 # Remplacer le pion par la pièce choisie
-                                board.push(chess.Move(selected_square, square, promotion=promotion_piece))
+                                board.push(chess.Move(square, square, promotion=promotion_piece))
 
                         else:
                             selected_square = -1  # Annuler la sélection si le mouvement est illégal
