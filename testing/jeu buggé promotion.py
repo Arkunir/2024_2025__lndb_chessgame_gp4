@@ -60,26 +60,6 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def promote_pawn():
-    """Fenêtre de promotion pour choisir la pièce."""
-    root = tk.Tk()
-    root.title("Promotion du pion")
-    root.geometry("300x150")  # Taille de la fenêtre
-
-    promotion_choice = tk.StringVar()
-
-    def select_piece(choice):
-        promotion_choice.set(choice)
-        root.destroy()
-
-    tk.Label(root, text="Choisissez une pièce pour la promotion :").pack(pady=10)
-    tk.Button(root, text="Dame (Q)", command=lambda: select_piece('Q')).pack(pady=5)
-    tk.Button(root, text="Tour (R)", command=lambda: select_piece('R')).pack(pady=5)
-    tk.Button(root, text="Cavalier (N)", command=lambda: select_piece('N')).pack(pady=5)
-    tk.Button(root, text="Fou (B)", command=lambda: select_piece('B')).pack(pady=5)
-
-    root.mainloop()
-    return promotion_choice.get()
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
