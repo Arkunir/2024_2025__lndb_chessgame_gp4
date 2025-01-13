@@ -61,30 +61,36 @@ def get_square_under_mouse(pos):
     return chess.square(col, row)
 
 def promote_pawn():
-    menu_width, menu_height = 200, 150
-    menu_x = WIDTH // 2 - menu_width // 2
-    menu_y = HEIGHT // 2 - menu_height // 2
-    font = pygame.font.Font(None, 36)
-    options = ['Dame', 'Tour', 'Cavalier', 'Fou']
+    """Fonction de promotion du pion."""
+    promoted_piece = None
+    choices = ['Q', 'R', 'N', 'B']  # Dame, Tour, Cavalier, Fou
 
+    # Afficher la fenêtre de sélection de la promotion
+    font = pygame.font.Font(None, 36)
+    text = font.render("Choisissez la pièce (Q: Dame, R: Tour, N: Cavalier, B: Fou)", True, (255, 255, 255))
+    screen.blit(text, (100, 100))
+
+    # Boucle pour choisir la promotion
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = event.pos
-                if menu_x <= mouse_x <= menu_x + menu_width:
-                    for i, option in enumerate(options):
-                        option_y = menu_y + i * (menu_height // 4)
-                        if option_y <= mouse_y <= option_y + menu_height // 4:
-                            return PROMOTION_OPTIONS[i]
 
-        pygame.draw.rect(screen, (50, 50, 50), (menu_x, menu_y, menu_width, menu_height))
-        for i, option in enumerate(options):
-            text = font.render(option, True, (255, 255, 255))
-            screen.blit(text, (menu_x + 10, menu_y + i * (menu_height // 4) + 10))
-        pygame.display.flip()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    promoted_piece = 'Q'  # Dame
+                elif event.key == pygame.K_r:
+                    promoted_piece = 'R'  # Tour
+                elif event.key == pygame.K_n:
+                    promoted_piece = 'N'  # Cavalier
+                elif event.key == pygame.K_b:
+                    promoted_piece = 'B'  # Fou
+
+                if promoted_piece:  # Si une pièce a été choisie, on ferme la fenêtre
+                    return promoted_piece
+
+        pygame.display.flip()  # Mettre à jour l'affichage
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
@@ -176,17 +182,16 @@ def reset_game():
     game_over = False  # Remettre le flag de fin de jeu à False
 
 def random_move():
-    # Obtenir une liste de tous les coups légaux
     legal_moves = list(board.legal_moves)
-    
-    # Choisir un coup aléatoire
+    if not legal_moves:
+        return None  # Aucun coup légal n'est possible
     return random.choice(legal_moves)
 
 # Fonction IA
 def play_with_ai():
     global board, game_over
     game_over = False
-    turn = True  # True: White's turn, False: Black's turn
+    turn = True  # True: White's turn (Player), False: Black's turn (AI)
     selected_square = -1  # Initialement aucune case sélectionnée
 
     while not game_over:
@@ -195,14 +200,13 @@ def play_with_ai():
                 pygame.quit()
                 exit()
 
-            # Gestion des clics de souris pour sélectionner et déplacer une pièce
-            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+            elif event.type == pygame.MOUSEBUTTONDOWN and turn and not game_over:
                 square = get_square_under_mouse(event.pos)
                 if square != -1:
                     piece = board.piece_at(square)
 
                     if selected_square == -1:  # Sélectionner une pièce
-                        if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
+                        if piece is not None and piece.color == chess.WHITE:
                             selected_square = square
                     else:  # Déplacer la pièce sélectionnée
                         move = chess.Move(selected_square, square)
@@ -211,28 +215,51 @@ def play_with_ai():
                         if move in board.legal_moves:
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
-                            turn = not turn  # Changer de joueur
+                            turn = not turn  # Passer au tour de l'IA
+
+                            # Vérifier la promotion des pions
+                            if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
+                               (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
+                                # Appeler la fonction de promotion
+                                promotion_piece = promote_pawn()  # Demander la promotion au joueur
+                                # Remplacer le pion par la pièce choisie
+                                board.push(chess.Move(square, square, promotion=promotion_piece))
+
                         else:
                             selected_square = -1  # Annuler la sélection si le mouvement est illégal
+
+        # Si c'est le tour de l'IA
+        if not turn and not game_over:
+            if board.is_checkmate():
+                display_winner("Blanc")
+                game_over = True
+            elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
+                display_draw("Match nul!")
+                game_over = True
+            else:
+                # Effectuer un coup aléatoire uniquement si la partie n'est pas terminée
+                if not (board.is_checkmate() or board.is_stalemate() or board.is_insufficient_material()):
+                    move = random_move()
+                    if move is not None:
+                        board.push(move)
+                        turn = not turn  # Passer au tour du joueur
+                    else:
+                        raise ValueError("Aucun coup légal n'est possible. Le jeu est terminé.")
+                else:
+                    game_over = True
 
         draw_board()  # Dessiner le plateau
         draw_pieces()  # Dessiner les pièces
         pygame.display.flip()  # Mettre à jour l'affichage
 
-        # Vérifier la victoire ou match nul
+        # Vérifier la fin de partie après chaque coup
         if board.is_checkmate():
-            display_winner("Blanc" if turn else "Noir")
+            winner = "Noir" if not turn else "Blanc"
+            display_winner(winner)
             game_over = True
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
             game_over = True
-
-        # Si c'est le tour de l'IA, effectuer un mouvement après un délai de 0,2 sec
-        if not turn:
-            pygame.time.delay(200)  # Délai de 0,2 seconde pour l'IA
-            move = random_move()
-            board.push(move)
-            turn = not turn  # Changer de joueur
 
 def play_with_two_players():
     global board, game_over
@@ -263,6 +290,15 @@ def play_with_two_players():
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
                             turn = not turn  # Changer de joueur
+
+                            # Vérifier la promotion des pions
+                            if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
+                               (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
+                                # Appeler la fonction de promotion
+                                promotion_piece = promote_pawn()  # Demander la promotion au joueur
+                                # Remplacer le pion par la pièce choisie
+                                board.push(chess.Move(square, square, promotion=promotion_piece))
+
                         else:
                             selected_square = -1  # Annuler la sélection si le mouvement est illégal
 
@@ -272,7 +308,8 @@ def play_with_two_players():
 
         # Vérifier la victoire ou match nul
         if board.is_checkmate():
-            display_winner("Blanc" if turn else "Noir")
+            winner = "Noir" if turn else "Blanc"
+            display_winner(winner)
             game_over = True
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
