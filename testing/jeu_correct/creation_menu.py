@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from test_rules import open_rules
 
 # Fonctions pour les actions des boutons
 def start_game():
@@ -102,11 +103,6 @@ quit_button = tk.Button(
     command=quit_game
 )
 quit_button.pack(pady=20)
-
-import tkinter as tk
-from test_rules import open_rules
-
-# ...
 
 # Bouton pour afficher les règles
 rules_button = tk.Button(

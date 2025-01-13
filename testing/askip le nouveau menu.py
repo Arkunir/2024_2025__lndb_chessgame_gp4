@@ -4,8 +4,10 @@ import random
 import tkinter as tk
 from tkinter import messagebox
 
+# Initialisation de pygame
 pygame.init()
 
+# Paramètres de la fenêtre
 WIDTH, HEIGHT = 800, 800
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
@@ -21,6 +23,7 @@ PIECE_FILES = {
 
 PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
 
+# Créer la fenêtre Pygame
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Jeu d'échecs")
 
@@ -35,6 +38,7 @@ def load_pieces():
 PIECES = load_pieces()
 board = chess.Board()
 
+# Définition des fonctions de dessin du jeu
 def draw_board():
     for row in range(ROWS):
         for col in range(COLS):
@@ -57,13 +61,16 @@ def get_square_under_mouse(pos):
     return chess.square(col, row)
 
 def promote_pawn():
+    """Fonction de promotion du pion."""
     promoted_piece = None
-    choices = ['Q', 'R', 'N', 'B']
+    choices = ['Q', 'R', 'N', 'B']  # Dame, Tour, Cavalier, Fou
 
+    # Afficher la fenêtre de sélection de la promotion
     font = pygame.font.Font(None, 36)
     text = font.render("Choisissez la pièce (Q: Dame, R: Tour, N: Cavalier, B: Fou)", True, (255, 255, 255))
     screen.blit(text, (100, 100))
 
+    # Boucle pour choisir la promotion
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -72,29 +79,31 @@ def promote_pawn():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
-                    promoted_piece = 'Q'
+                    promoted_piece = 'Q'  # Dame
                 elif event.key == pygame.K_r:
-                    promoted_piece = 'R'
+                    promoted_piece = 'R'  # Tour
                 elif event.key == pygame.K_n:
-                    promoted_piece = 'N'
+                    promoted_piece = 'N'  # Cavalier
                 elif event.key == pygame.K_b:
-                    promoted_piece = 'B'
+                    promoted_piece = 'B'  # Fou
 
-                if promoted_piece:
+                if promoted_piece:  # Si une pièce a été choisie, on ferme la fenêtre
                     return promoted_piece
 
-        pygame.display.flip()
+        pygame.display.flip()  # Mettre à jour l'affichage
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
     text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
     
+    # Create "Rejouer" button
     button_width, button_height = 200, 60
     button_x = WIDTH // 2 - button_width // 2
     button_y = HEIGHT // 2 + 100
     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
     
+    # Create "Quitter" button
     quit_button_y = HEIGHT // 2 + 200
     quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
@@ -110,15 +119,17 @@ def display_winner(winner):
                     pygame.quit()
                     exit()
 
-        screen.fill((0, 0, 0))
+        screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
 
-        pygame.draw.rect(screen, (255, 255, 255), button_rect)
-        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
         screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
 
-        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)
-        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))
+        # Draw the "Quitter" button (red with white text)
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
+        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
         screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
 
         pygame.display.flip()
@@ -128,11 +139,13 @@ def display_draw(message):
     text = font.render(message, True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
+    # Create "Rejouer" button
     button_width, button_height = 200, 60
     button_x = WIDTH // 2 - button_width // 2
     button_y = HEIGHT // 2 + 100
     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
     
+    # Create "Quitter" button
     quit_button_y = HEIGHT // 2 + 200
     quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
@@ -148,35 +161,70 @@ def display_draw(message):
                     pygame.quit()
                     exit()
 
-        screen.fill((0, 0, 0))
+        screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
 
-        pygame.draw.rect(screen, (255, 255, 255), button_rect)
-        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
         screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
 
-        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)
-        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))
+        # Draw the "Quitter" button (red with white text)
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
+        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
         screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
 
         pygame.display.flip()
 
 def reset_game():
     global board, game_over
-    board = chess.Board()
-    game_over = False
+    board = chess.Board()  # Réinitialiser l'échiquier à l'état initial
+    game_over = False  # Remettre le flag de fin de jeu à False
 
 def random_move():
     legal_moves = list(board.legal_moves)
     if not legal_moves:
-        return None
+        return None  # Aucun coup légal n'est possible
     return random.choice(legal_moves)
 
+def valid_pawn_move(board, start_square, end_square, color):
+    """Vérifie si un mouvement de pion est valide."""
+    direction = 1 if color == chess.WHITE else -1  # Direction du mouvement : 1 pour blanc, -1 pour noir
+    start_rank = chess.square_rank(start_square)
+    end_rank = chess.square_rank(end_square)
+
+    # Mouvement d'une case en avant
+    if end_square == start_square + 8 * direction:
+        if board.piece_at(end_square) is None:
+            return True
+
+    # Mouvement de deux cases au début du jeu
+    if (start_rank == 1 and color == chess.WHITE) or (start_rank == 6 and color == chess.BLACK):
+        if end_square == start_square + 16 * direction:
+            middle_square = start_square + 8 * direction
+            if board.piece_at(middle_square) is None and board.piece_at(end_square) is None:
+                return True
+
+    # Capture en diagonale
+    if abs(start_square - end_square) == 7 or abs(start_square - end_square) == 9:
+        if board.piece_at(end_square) and board.piece_at(end_square).color != color:
+            return True
+
+    return False
+
+def handle_pawn_promotion(board, square, color):
+    """Effectue la promotion du pion lorsqu'il atteint la dernière rangée."""
+    if color == chess.WHITE and chess.square_rank(square) == 6:  # Si le pion blanc atteint la rangée 7
+        board.push(chess.Move(square, square, promotion='Q'))  # Promotion en dame
+    elif color == chess.BLACK and chess.square_rank(square) == 0:  # Si le pion noir atteint la rangée 0
+        board.push(chess.Move(square, square, promotion='q'))  # Promotion en dame
+
+# Fonction IA
 def play_with_ai():
     global board, game_over
     game_over = False
-    turn = True
-    selected_square = -1
+    turn = True  # True: White's turn (Player), False: Black's turn (AI)
+    selected_square = -1  # Initialement aucune case sélectionnée
 
     while not game_over:
         for event in pygame.event.get():
@@ -189,25 +237,27 @@ def play_with_ai():
                 if square != -1:
                     piece = board.piece_at(square)
 
-                    if selected_square == -1:
+                    if selected_square == -1:  # Sélectionner une pièce
                         if piece is not None and piece.color == chess.WHITE:
                             selected_square = square
-                    else:
+                    else:  # Déplacer la pièce sélectionnée
                         move = chess.Move(selected_square, square)
 
-                        if move in board.legal_moves:
+                        # Vérifier si le mouvement est légal pour les pions
+                        if valid_pawn_move(board, selected_square, square, chess.WHITE):
                             board.push(move)
-                            selected_square = -1
-                            turn = not turn
+                            selected_square = -1  # Réinitialiser la case sélectionnée
+                            turn = not turn  # Passer au tour de l'IA
 
+                            # Vérification de la promotion du pion
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
-                                promotion_piece = promote_pawn()
-                                board.push(chess.Move(square, square, promotion=promotion_piece))
+                               (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
+                                handle_pawn_promotion(board, square, chess.WHITE)
 
                         else:
-                            selected_square = -1
+                            selected_square = -1  # Annuler la sélection si le mouvement est illégal
 
+        # Si c'est le tour de l'IA
         if not turn and not game_over:
             if board.is_checkmate():
                 display_winner("Blanc")
@@ -216,33 +266,26 @@ def play_with_ai():
                 display_draw("Match nul!")
                 game_over = True
             else:
-                if not (board.is_checkmate() or board.is_stalemate() or board.is_insufficient_material()):
-                    move = random_move()
-                    if move is not None:
-                        board.push(move)
-                        turn = not turn
-                    else:
-                        raise ValueError("Aucun coup légal n'est possible. Le jeu est terminé.")
-                else:
-                    game_over = True
+                # Effectuer un coup aléatoire uniquement si la partie n'est pas terminée
+                move = random_move()
+                if move is not None:
+                    board.push(move)
+                    turn = not turn  # Passer au tour du joueur
 
-        draw_board()
-        draw_pieces()
-        pygame.display.flip()
+                    # Vérification de la promotion de l'IA (côté noir)
+                    last_move = board.peek()
+                    if last_move.promotion and (chess.square_rank(last_move.to_square) == 0):
+                        handle_pawn_promotion(board, last_move.to_square, chess.BLACK)
 
-        if board.is_checkmate():
-            winner = "Noir" if not turn else "Blanc"
-            display_winner(winner)
-            game_over = True
-        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
-            display_draw("Match nul!")
-            game_over = True
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
 
 def play_with_two_players():
     global board, game_over
     game_over = False
-    turn = True
-    selected_square = -1
+    turn = True  # True: White's turn, False: Black's turn
+    selected_square = -1  # Initialement aucune case sélectionnée
 
     while not game_over:
         for event in pygame.event.get():
@@ -250,36 +293,40 @@ def play_with_two_players():
                 pygame.quit()
                 exit()
 
+            # Gestion des clics de souris pour sélectionner et déplacer une pièce
             elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
                 square = get_square_under_mouse(event.pos)
                 if square != -1:
                     piece = board.piece_at(square)
 
-                    if selected_square == -1:
+                    if selected_square == -1:  # Sélectionner une pièce
                         if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
                             selected_square = square
-                    else:
+                    else:  # Déplacer la pièce sélectionnée
                         move = chess.Move(selected_square, square)
 
+                        # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
                             board.push(move)
-                            selected_square = -1
-                            turn = not turn
+                            selected_square = -1  # Réinitialiser la case sélectionnée
+                            turn = not turn  # Changer de joueur
 
-                            # Vérification de la promotion après le déplacement
+                            # Vérifier la promotion des pions
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
-                                promotion_piece = promote_pawn()  # Demande à l'utilisateur de choisir une pièce pour la promotion
+                               (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
+                                # Appeler la fonction de promotion
+                                promotion_piece = promote_pawn()  # Demander la promotion au joueur
+                                # Remplacer le pion par la pièce choisie
                                 board.push(chess.Move(square, square, promotion=promotion_piece))
 
                         else:
-                            selected_square = -1
+                            selected_square = -1  # Annuler la sélection si le mouvement est illégal
 
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
 
-        draw_board()
-        draw_pieces()
-        pygame.display.flip()
-
+        # Vérifier la victoire ou match nul
         if board.is_checkmate():
             winner = "Noir" if turn else "Blanc"
             display_winner(winner)
@@ -291,7 +338,7 @@ def play_with_two_players():
 def play_ia_vs_ia():
     global board, game_over
     game_over = False
-    turn = True
+    turn = True  # True: White's turn, False: Black's turn
 
     while not game_over:
         for event in pygame.event.get():
@@ -299,7 +346,8 @@ def play_ia_vs_ia():
                 pygame.quit()
                 exit()
 
-        pygame.time.delay(200)
+        # Si c'est le tour de l'IA, effectuer un mouvement après un délai de 0,2 sec
+        pygame.time.delay(200)  # Délai de 0,2 seconde pour l'IA
 
         move = random_move()
         board.push(move)
@@ -309,6 +357,7 @@ def play_ia_vs_ia():
         draw_pieces()
         pygame.display.flip()
 
+        # Vérifier la victoire ou match nul
         if board.is_checkmate():
             display_winner("Blanc" if turn else "Noir")
             game_over = True
@@ -321,15 +370,17 @@ def start_game(mode):
     if mode == "AI":
         play_with_ai()
     elif mode == "2 Players":
-        play_with_two_players()
+        play_with_two_players()  # Utiliser la fonction mode 2 joueurs
     elif mode == "IA vs IA":
-        play_ia_vs_ia()
+        play_ia_vs_ia()  # Ajouter ce mode IA contre IA
 
+# Création de la fenêtre Tkinter pour le menu
 def menu_window():
     window = tk.Tk()
     window.title("Menu de sélection")
 
-    window.geometry("300x200")
+    # Définir une taille minimale pour la fenêtre
+    window.geometry("300x200")  # Fixer la taille de la fenêtre à 300x200 pixels
     
     def start_ai_game():
         window.destroy()
@@ -349,4 +400,5 @@ def menu_window():
     
     window.mainloop()
 
+# Démarrer le menu
 menu_window()
