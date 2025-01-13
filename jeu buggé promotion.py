@@ -219,7 +219,7 @@ def play_with_ai():
 
                             # Vérifier la promotion des pions
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
+                               (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
                                 # Appeler la fonction de promotion
                                 promotion_piece = promote_pawn()  # Demander la promotion au joueur
                                 # Remplacer le pion par la pièce choisie
@@ -293,7 +293,7 @@ def play_with_two_players():
 
                             # Vérifier la promotion des pions
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 0 or chess.square_rank(square) == 7):
+                               (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
                                 # Appeler la fonction de promotion
                                 promotion_piece = promote_pawn()  # Demander la promotion au joueur
                                 # Remplacer le pion par la pièce choisie
