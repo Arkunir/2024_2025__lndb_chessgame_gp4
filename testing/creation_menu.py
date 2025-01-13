@@ -18,12 +18,26 @@ def quit_game():
     if messagebox.askyesno("Quitter", "Êtes-vous sûr de vouloir quitter le jeu ?"):
         root.destroy()
 
+def toggle_fullscreen():
+    """Bascule entre le mode plein écran et le mode fenêtré."""
+    is_fullscreen = root.attributes('-fullscreen')
+    root.attributes('-fullscreen', not is_fullscreen)
+    update_fullscreen_button_text()
+
+def update_fullscreen_button_text():
+    """Met à jour le texte du bouton en fonction de l'état de la fenêtre."""
+    is_fullscreen = root.attributes('-fullscreen')
+    if is_fullscreen:
+        fullscreen_button.config(text="Quitter le mode plein écran")
+    else:
+        fullscreen_button.config(text="Mettre en plein écran")
+
 # Création de la fenêtre principale
 root = tk.Tk()
 root.title("Jeu d'Échecs - Menu Principal")
 root.configure(bg="#2c3e50")  # Couleur de fond
 
-# Mettre la fenêtre en plein écran
+# Mettre la fenêtre en plein écran par défaut
 root.attributes('-fullscreen', True)
 
 # Titre du jeu
@@ -45,7 +59,6 @@ buttons = [
     ("Nouvelle Partie", start_game),
     ("Options", open_options),
     ("Règles", open_rules),
-    ("Quitter le mode plein écran", lambda: root.attributes('-fullscreen', False))
 ]
 
 for text, command in buttons:
@@ -61,6 +74,20 @@ for text, command in buttons:
         command=command
     )
     button.pack(pady=15)  # Espacement entre les boutons augmenté
+
+# Bouton pour basculer entre le mode plein écran et le mode fenêtré
+fullscreen_button = tk.Button(
+    button_frame,
+    text="Quitter le mode plein écran",  # Texte initial
+    font=("Arial", 24),
+    fg="#ecf0f1",
+    bg="#3498db",
+    activeforeground="#ecf0f1",
+    activebackground="#2980b9",
+    width=25,
+    command=toggle_fullscreen
+)
+fullscreen_button.pack(pady=15)
 
 # Bouton "Quitter" en rouge
 quit_button = tk.Button(
