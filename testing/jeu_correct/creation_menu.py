@@ -103,5 +103,23 @@ quit_button = tk.Button(
 )
 quit_button.pack(pady=20)
 
+import tkinter as tk
+from test_rules import open_rules
+
+# ...
+
+# Bouton pour afficher les règles
+rules_button = tk.Button(
+    root,
+    text="Règles du Jeu",
+    font=("Arial", 16),
+    fg="#ecf0f1",
+    bg="#3498db",
+    activeforeground="#ecf0f1",
+    activebackground="#2980b9",
+    command=open_rules
+)
+rules_button.pack(pady=10)
+
 # Lancer la boucle principale de Tkinter
 root.mainloop()
