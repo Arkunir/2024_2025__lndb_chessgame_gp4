@@ -266,13 +266,15 @@ def play_with_two_players():
                             selected_square = -1
                             turn = not turn
 
+                            # Vérification de la promotion après le déplacement
                             if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
                                (chess.square_rank(square) == 1 if board.piece_at(square).color == chess.BLACK else chess.square_rank(square) == 6):
-                                promotion_piece = promote_pawn()
+                                promotion_piece = promote_pawn()  # Demande à l'utilisateur de choisir une pièce pour la promotion
                                 board.push(chess.Move(square, square, promotion=promotion_piece))
 
                         else:
                             selected_square = -1
+
 
         draw_board()
         draw_pieces()
