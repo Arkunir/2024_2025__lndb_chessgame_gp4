@@ -36,6 +36,21 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
 
 - Bon jeu!!
 
+### Status:
+
+Travail en cour:
+  - Rejouer
+  - Création d'un menu
+  - Création d'une IA complexe
+  - Promotion des pièces
+  - Affichage de texte en fin de partie
+
+Travail fini:
+  - Création du plateau
+  - Création des pièces
+  - Règles basique du jeu
+  - IA basique
+
 ### Contributeur:
 
 Ce projet a été développé par : Baranovskii Roman, Bideau James, Bonnière Tristan, Broage Théodore
