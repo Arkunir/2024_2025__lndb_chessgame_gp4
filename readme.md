@@ -40,16 +40,18 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
 
 Travail en cour:
   - Rejouer
-  - Création d'un menu
+  - Ajpouter le lancement du jeu au menu
   - Création d'une IA complexe
   - Promotion des pièces
   - Affichage de texte en fin de partie
+  - Création des options
 
 Travail fini:
   - Création du plateau
   - Création des pièces
   - Règles basique du jeu
   - IA basique
+  - Crée un menu
 
 ### Contributeur:
 
