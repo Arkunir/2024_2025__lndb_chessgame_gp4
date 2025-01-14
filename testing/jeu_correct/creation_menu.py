@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from test_rules import open_rules
+from  rules_F import open_rules
 
 # Fonctions pour les actions des boutons
 def start_game():
