@@ -11,10 +11,6 @@ def open_options():
     messagebox.showinfo("Options", "Ouverture des options...")
     # Ajouter ici la logique pour ouvrir les options
 
-def open_rules():
-    messagebox.showinfo("Règles", "Ouverture des règles du jeu...")
-    # Ajouter ici la logique pour afficher les règles
-
 def quit_game():
     if messagebox.askyesno("Quitter", "Êtes-vous sûr de vouloir quitter le jeu ?"):
         root.destroy()
@@ -59,7 +55,6 @@ button_frame.pack(pady=20)
 buttons = [
     ("Nouvelle Partie", start_game),
     ("Options", open_options),
-    ("Règles", open_rules),
 ]
 
 for text, command in buttons:
@@ -76,7 +71,6 @@ for text, command in buttons:
     )
     button.pack(pady=15)  # Espacement entre les boutons augmenté
 
-# Bouton pour basculer entre le mode plein écran et le mode fenêtré
 fullscreen_button = tk.Button(
     button_frame,
     text="Quitter le mode plein écran",  # Texte initial
@@ -89,6 +83,20 @@ fullscreen_button = tk.Button(
     command=toggle_fullscreen
 )
 fullscreen_button.pack(pady=15)
+
+# Bouton pour afficher les règles
+rules_button = tk.Button(
+    root,
+    text="Règles du Jeu",
+    font=("Arial", 24),
+    fg="#ecf0f1",
+    bg="#3498db",
+    activeforeground="#ecf0f1",
+    activebackground="#2980b9",
+    width=25,
+    command=open_rules
+)
+rules_button.pack(pady=15)
 
 # Bouton "Quitter" en rouge
 quit_button = tk.Button(
@@ -103,19 +111,6 @@ quit_button = tk.Button(
     command=quit_game
 )
 quit_button.pack(pady=20)
-
-# Bouton pour afficher les règles
-rules_button = tk.Button(
-    root,
-    text="Règles du Jeu",
-    font=("Arial", 16),
-    fg="#ecf0f1",
-    bg="#3498db",
-    activeforeground="#ecf0f1",
-    activebackground="#2980b9",
-    command=open_rules
-)
-rules_button.pack(pady=10)
 
 # Lancer la boucle principale de Tkinter
 root.mainloop()
