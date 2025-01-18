@@ -76,17 +76,3 @@ def open_rules():
     )
     exit_button.pack(pady=10)
 
-# Exemple de fenêtre principale
-root = tk.Tk()
-root.title("Jeu d'Échecs")
-root.geometry("400x200")
-
-rules_button = tk.Button(
-    root,
-    text="Ouvrir les Règles",
-    font=("Arial", 16),
-    command=open_rules
-)
-rules_button.pack(pady=50)
-
-root.mainloop()
