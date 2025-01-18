@@ -1,17 +1,12 @@
 import tkinter as tk
 
-def open_rules(root):
-    # Close the main menu window
-    root.destroy()
-
+def open_rules():
     # Créer une nouvelle fenêtre pour les règles
     rules_window = tk.Toplevel()
     rules_window.title("Règles du Jeu d'Échecs")
+    rules_window.attributes("-fullscreen", True)  # Mode plein écran
     rules_window.configure(bg="#2c3e50")  # Couleur de fond
-    
-    # Mettre la fenêtre en plein écran
-    rules_window.attributes('-fullscreen', True)
-    
+
     # Titre des règles
     title_label = tk.Label(
         rules_window,
@@ -56,24 +51,20 @@ def open_rules(root):
     rules_label.pack(pady=10, padx=10, fill="both", expand=True)
 
     # Bouton pour quitter le mode plein écran
-    def exit_fullscreen():
-        rules_window.attributes('-fullscreen', False)
-
-    # Bouton pour quitter le mode plein écran
-    exit_fullscreen_button = tk.Button(
+    close_button = tk.Button(
         rules_window,
-        text="Mettre en plein écran",
+        text="Quitter le Plein Écran",
         font=("Arial", 16),
         fg="#ecf0f1",
-        bg="#3498db",
+        bg="#e74c3c",
         activeforeground="#ecf0f1",
-        activebackground="#2980b9",
-        command=exit_fullscreen
+        activebackground="#c0392b",
+        command=lambda: rules_window.attributes("-fullscreen", False)  # Désactive le plein écran
     )
-    exit_fullscreen_button.pack(pady=10)
+    close_button.pack(pady=20)
 
     # Bouton pour fermer la fenêtre
-    close_button = tk.Button(
+    exit_button = tk.Button(
         rules_window,
         text="Fermer",
         font=("Arial", 16),
@@ -83,4 +74,19 @@ def open_rules(root):
         activebackground="#c0392b",
         command=rules_window.destroy
     )
-    close_button.pack(pady=10)
+    exit_button.pack(pady=10)
+
+# Exemple de fenêtre principale
+root = tk.Tk()
+root.title("Jeu d'Échecs")
+root.geometry("400x200")
+
+rules_button = tk.Button(
+    root,
+    text="Ouvrir les Règles",
+    font=("Arial", 16),
+    command=open_rules
+)
+rules_button.pack(pady=50)
+
+root.mainloop()
