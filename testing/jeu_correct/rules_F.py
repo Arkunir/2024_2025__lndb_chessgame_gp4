@@ -75,4 +75,3 @@ def open_rules():
         command=rules_window.destroy
     )
     exit_button.pack(pady=10)
-
