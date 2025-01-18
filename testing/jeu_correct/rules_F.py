@@ -1,12 +1,17 @@
 import tkinter as tk
 
-def open_rules():
+def open_rules(root):
+    # Close the main menu window
+    root.destroy()
+
     # Créer une nouvelle fenêtre pour les règles
     rules_window = tk.Toplevel()
     rules_window.title("Règles du Jeu d'Échecs")
-    rules_window.geometry("950x600")  # Taille de la fenêtre
     rules_window.configure(bg="#2c3e50")  # Couleur de fond
-
+    
+    # Mettre la fenêtre en plein écran
+    rules_window.attributes('-fullscreen', True)
+    
     # Titre des règles
     title_label = tk.Label(
         rules_window,
@@ -50,6 +55,23 @@ def open_rules():
     )
     rules_label.pack(pady=10, padx=10, fill="both", expand=True)
 
+    # Bouton pour quitter le mode plein écran
+    def exit_fullscreen():
+        rules_window.attributes('-fullscreen', False)
+
+    # Bouton pour quitter le mode plein écran
+    exit_fullscreen_button = tk.Button(
+        rules_window,
+        text="Mettre en plein écran",
+        font=("Arial", 16),
+        fg="#ecf0f1",
+        bg="#3498db",
+        activeforeground="#ecf0f1",
+        activebackground="#2980b9",
+        command=exit_fullscreen
+    )
+    exit_fullscreen_button.pack(pady=10)
+
     # Bouton pour fermer la fenêtre
     close_button = tk.Button(
         rules_window,
@@ -61,4 +83,4 @@ def open_rules():
         activebackground="#c0392b",
         command=rules_window.destroy
     )
-    close_button.pack(pady=20)
+    close_button.pack(pady=10)

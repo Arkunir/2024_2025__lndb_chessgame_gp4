@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from  rules_F import open_rules
+from rules_F import open_rules
 
 # Fonctions pour les actions des boutons
 def start_game():
@@ -94,7 +94,7 @@ rules_button = tk.Button(
     activeforeground="#ecf0f1",
     activebackground="#2980b9",
     width=25,
-    command=open_rules
+    command=lambda: open_rules(root)  # Pass the root reference
 )
 rules_button.pack(pady=15)
 
