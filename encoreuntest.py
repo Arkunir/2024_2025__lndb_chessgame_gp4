@@ -187,6 +187,7 @@ def random_move():
     return random.choice(legal_moves)
 
 def handle_pawn_promotion(move):
+    root = tk.Tk()
     """Gère la promotion d'un pion si nécessaire."""
     if board.is_legal(move):
         piece = board.piece_at(move.from_square)
