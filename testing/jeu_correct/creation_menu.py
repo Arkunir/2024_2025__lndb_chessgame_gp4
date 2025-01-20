@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from rules_F import open_rules
+from menu_regles import open_rules
 from menu_options import open_options
 
 # Fonctions pour les actions des boutons
@@ -68,6 +68,21 @@ for text, command in buttons:
     )
     button.pack(pady=15)  # Espacement entre les boutons augmenté
 
+# Bouton pour afficher les règles
+rules_button = tk.Button(
+    button_frame,
+    text="Règles du Jeu",
+    font=("Arial", 24),
+    fg="#ecf0f1",
+    bg="#3498db",
+    activeforeground="#ecf0f1",
+    activebackground="#2980b9",
+    width=25,
+    command=open_rules
+)
+rules_button.pack(pady=15)
+
+# Bouton pour mettre en plein écran ou quitter le plein écran
 fullscreen_button = tk.Button(
     button_frame,
     text="Quitter le mode plein écran",  # Texte initial
@@ -80,20 +95,6 @@ fullscreen_button = tk.Button(
     command=toggle_fullscreen
 )
 fullscreen_button.pack(pady=15)
-
-# Bouton pour afficher les règles
-rules_button = tk.Button(
-    root,
-    text="Règles du Jeu",
-    font=("Arial", 24),
-    fg="#ecf0f1",
-    bg="#3498db",
-    activeforeground="#ecf0f1",
-    activebackground="#2980b9",
-    width=25,
-    command=open_rules
-)
-rules_button.pack(pady=15)
 
 # Bouton "Quitter" en rouge
 quit_button = tk.Button(

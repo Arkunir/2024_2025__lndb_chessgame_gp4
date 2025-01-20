@@ -50,8 +50,8 @@ def open_rules():
     )
     rules_label.pack(pady=10, padx=10, fill="both", expand=True)
 
-    # Bouton pour quitter le mode plein écran
-    close_button = tk.Button(
+    # Bouton pour mettre en plein écran ou quitter le plein écran
+    fullscreen_button = tk.Button(
         rules_window,
         text="Quitter le Plein Écran",
         font=("Arial", 16),
@@ -59,9 +59,9 @@ def open_rules():
         bg="#e74c3c",
         activeforeground="#ecf0f1",
         activebackground="#c0392b",
-        command=lambda: rules_window.attributes("-fullscreen", False)  # Désactive le plein écran
+        command=lambda: toggle_fullscreen(rules_window, fullscreen_button)  # Toggle fullscreen
     )
-    close_button.pack(pady=20)
+    fullscreen_button.pack(pady=20)
 
     # Bouton pour fermer la fenêtre
     exit_button = tk.Button(
@@ -75,3 +75,9 @@ def open_rules():
         command=rules_window.destroy
     )
     exit_button.pack(pady=10)
+
+def toggle_fullscreen(window, button):
+    current_state = window.attributes("-fullscreen")
+    window.attributes("-fullscreen", not current_state)
+    button_text = "Mettre en Plein Écran" if current_state else "Quitter le Plein Écran"
+    button.config(text=button_text)
