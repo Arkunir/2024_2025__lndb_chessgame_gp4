@@ -111,8 +111,8 @@ def open_options():
         "Enregistrer les paramètres"
     ]
 
-    # Création des boutons pour chaque option
-    for option in options:
+    # Création des boutons pour chaque option dans une grille 2x2
+    for index, option in enumerate(options):
         option_button = tk.Button(
             options_frame,
             text=option,
@@ -123,7 +123,9 @@ def open_options():
             activebackground="#2980b9",
             command=lambda opt=option: print(f"Option sélectionnée: {opt}")  # Placeholder action
         )
-        option_button.pack(pady=10)
+        row = index // 2  # Determine the row index
+        column = index % 2  # Determine the column index
+        option_button.grid(row=row, column=column, padx=10, pady=10, sticky=tk.CENTER)  # Center the buttons
 
     # Bouton pour mettre en plein écran ou quitter le plein écran
     fullscreen_button = tk.Button(
