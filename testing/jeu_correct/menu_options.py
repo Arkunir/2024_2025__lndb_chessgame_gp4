@@ -125,7 +125,7 @@ def open_options():
         )
         row = index // 2  # Determine the row index
         column = index % 2  # Determine the column index
-        option_button.grid(row=row, column=column, padx=10, pady=10, sticky=tk.CENTER)  # Center the buttons
+        option_button.grid(row=row, column=column, padx=10, pady=10, sticky="nsew")  # Center the buttons
 
     # Bouton pour mettre en plein écran ou quitter le plein écran
     fullscreen_button = tk.Button(
