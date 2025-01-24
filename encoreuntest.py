@@ -195,8 +195,8 @@ def handle_pawn_promotion(move):
         # Vérification si c'est bien un pion
         if piece and piece.symbol().upper() == 'P':
             # Vérification de la rangée où le pion atteint pour promouvoir
-            if (piece.color == chess.WHITE and chess.square_rank(move.to_square) == 6) or \
-               (piece.color == chess.BLACK and chess.square_rank(move.to_square) == 1):
+            if (piece.color == chess.WHITE and chess.square_rank(move.to_square) == 7) or \
+               (piece.color == chess.BLACK and chess.square_rank(move.to_square) == 0):
                 
                 # Appeler la fenêtre pour choisir la pièce
                 promotion_choice = promote_pawn()
@@ -336,8 +336,8 @@ def handle_pawn_promotion(move):
         # Vérification si c'est bien un pion
         if piece and piece.symbol().upper() == 'P':
             # Vérification de la rangée où le pion atteint pour promouvoir
-            if (piece.color == chess.WHITE and chess.square_rank(move.to_square) == 6) or \
-               (piece.color == chess.BLACK and chess.square_rank(move.to_square) == 1):
+            if (piece.color == chess.WHITE and chess.square_rank(move.to_square) == 7) or \
+               (piece.color == chess.BLACK and chess.square_rank(move.to_square) == 0):
                 
                 # Appeler la fenêtre pour choisir la pièce
                 promotion_choice = promote_pawn()
