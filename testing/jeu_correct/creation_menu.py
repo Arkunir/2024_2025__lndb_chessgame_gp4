@@ -1,12 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from menu_regles import open_rules
-from menu_options import open_options
-
-# Fonctions pour les actions des boutons
-def start_game():
-    messagebox.showinfo("Nouvelle Partie", "Démarrage d'une nouvelle partie...")
-    # Ajouter ici la logique pour démarrer une nouvelle partie
+from menu_options import open_options  # Ensure this is included
+from menu_jouer import open_new_game  # Import the new function
 
 def quit_game():
     if messagebox.askyesno("Quitter", "Êtes-vous sûr de vouloir quitter le jeu ?"):
@@ -50,7 +46,7 @@ button_frame.pack(pady=20)
 
 # Boutons du menu
 buttons = [
-    ("Nouvelle Partie", start_game),
+    ("Nouvelle Partie", open_new_game),  # Updated to call open_new_game
     ("Options", open_options),
 ]
 
