@@ -19,7 +19,7 @@ DARK_BROWN = (181, 136, 99)
 ASSETS_PATH = "game_chess/assets/"
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
-    'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
+    'p': "bP.png", 'n': "bN.png", 'b': "bB.png", 'r': "bR.png", 'q': "bQ.png", 'k': "bK.png"
 }
 
 PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
