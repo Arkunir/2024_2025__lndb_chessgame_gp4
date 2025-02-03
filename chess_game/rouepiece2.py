@@ -14,12 +14,18 @@ def choisir_piece():
 
 def relancer_choix():
     global derniere_piece 
-    
+    piece_choisie = random.choice(pieces_biaisees)
     while piece_choisie == derniere_piece:
         piece_choisie = random.choice(pieces_biaisees)
         
     derniere_piece = piece_choisie
     label_resultat.config(text=f"Pièce choisie : {piece_choisie}")
+
+def promote_piece(piece):
+    global derniere_piece
+    derniere_piece = piece
+    # Logic to update the game state with the promoted piece
+    print(f"Promotion to {piece} has been applied.")
 
 fenetre = tk.Tk()
 fenetre.title("Roulette des pièces d'échecs")

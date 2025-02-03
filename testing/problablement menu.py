@@ -15,7 +15,7 @@ SQUARE_SIZE = WIDTH // COLS
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
-ASSETS_PATH = "game_chess/assets/Classic"
+ASSETS_PATH = "game_chess/assets/Pieces/Type_1/"
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
@@ -201,20 +201,15 @@ def play_with_ai():
 
                         # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
+                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
+                               (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
+                                # Appeler la fonction de promotion avec la couleur correcte
+                                promotion_piece = promote_pawn(chess.WHITE)
+                                move = chess.Move(selected_square, square, promotion=promotion_piece)
+
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
                             turn = not turn  # Passer au tour de l'IA
-
-                            # Vérifier la promotion des pions
-                            if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 1 or chess.square_rank(square) == 6):
-                                # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE)
-                                # Remplacer le pion par la pièce choisie
-                                board.pop()  # Annuler le dernier coup pour ajouter la promotion
-                                board.push(chess.Move(selected_square, square, promotion=promotion_piece))
-                        else:
-                            selected_square = -1  # Annuler la sélection si le mouvement est illégal
 
         if not turn and not game_over:
             if board.is_checkmate():
@@ -269,18 +264,15 @@ def play_with_two_players():
 
                         # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
+                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
+                               (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
+                                # Appeler la fonction de promotion avec la couleur correcte
+                                promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
+                                move = chess.Move(selected_square, square, promotion=promotion_piece)
+
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
                             turn = not turn  # Changer de joueur
-
-                            # Vérifier la promotion des pions
-                            if board.piece_at(square) and board.piece_at(square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 1 or chess.square_rank(square) == 6):
-                                # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
-                                # Remplacer le pion par la pièce choisie
-                                board.pop()  # Annuler le dernier coup pour ajouter la promotion
-                                board.push(chess.Move(selected_square, square, promotion=promotion_piece))
                         else:
                             selected_square = -1  # Annuler la sélection si le mouvement est illégal
 
