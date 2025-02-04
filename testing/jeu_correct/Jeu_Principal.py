@@ -15,11 +15,7 @@ SQUARE_SIZE = WIDTH // COLS
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
-<<<<<<< Updated upstream:testing/jeu_correct/Jeu_Principal.py
-ASSETS_PATH = "game_chess/assets/Pieces/Type_2/"
-=======
 ASSETS_PATH = "game_chess/assets/Pieces/Type_1/"
->>>>>>> Stashed changes:testing/chesstestdont give ma any trouble.py
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
@@ -63,28 +59,6 @@ def get_square_under_mouse(pos):
     col = x // SQUARE_SIZE
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
-
-<<<<<<< Updated upstream:testing/jeu_correct/Jeu_Principal.py
-def promote_pawn(color):
-    """
-    Demande à l'utilisateur la pièce dans laquelle il veut promouvoir le pion.
-    """
-    options = {
-        'Q': chess.QUEEN,
-        'R': chess.ROOK,
-        'B': chess.BISHOP,
-        'N': chess.KNIGHT
-    }
-
-    while True:
-        # Afficher un choix à l'utilisateur
-        prompt = f"Promotion {('Blanc' if color == chess.WHITE else 'Noir')} : Choisissez une pièce (Q, R, B, N) : "
-        choice = input(prompt).upper()
-
-        if choice in options:
-            return options[choice]
-        print("Choix invalide. Veuillez entrer Q, R, B ou N.")
-=======
 
 def reset_game():
     global board, game_over
@@ -133,7 +107,6 @@ def display_winner(winner):
         screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
 
         pygame.display.flip()
->>>>>>> Stashed changes:testing/chesstestdont give ma any trouble.py
 
 def display_draw(message):
     font = pygame.font.Font(None, 72)
