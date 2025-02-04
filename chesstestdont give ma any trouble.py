@@ -1,4 +1,3 @@
-
 import pygame
 import chess
 
@@ -90,10 +89,6 @@ def display_winner(winner):
     button_x = WIDTH // 2 - button_width // 2
     button_y = HEIGHT // 2 + 100
     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
-    # Create "Quitter" button
-    quit_button_y = HEIGHT // 2 + 200
-    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
     while True:
         for event in pygame.event.get():
@@ -103,9 +98,6 @@ def display_winner(winner):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
                     return "replay"
-                elif quit_button_rect.collidepoint(event.pos):
-                    pygame.quit()
-                    exit()
 
         screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
@@ -114,11 +106,6 @@ def display_winner(winner):
         pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
         button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
         screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
-
-        # Draw the "Quitter" button (red with white text)
-        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
-        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
-        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
 
         pygame.display.flip()
 
@@ -132,10 +119,6 @@ def display_draw(message):
     button_x = WIDTH // 2 - button_width // 2
     button_y = HEIGHT // 2 + 100
     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
-    # Create "Quitter" button
-    quit_button_y = HEIGHT // 2 + 200
-    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
     while True:
         for event in pygame.event.get():
@@ -145,9 +128,6 @@ def display_draw(message):
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
                     return "replay"
-                elif quit_button_rect.collidepoint(event.pos):
-                    pygame.quit()
-                    exit()
 
         screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
@@ -156,11 +136,6 @@ def display_draw(message):
         pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
         button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
         screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
-
-        # Draw the "Quitter" button (red with white text)
-        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
-        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
-        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
 
         pygame.display.flip()
 

@@ -1,9 +1,13 @@
-
 import pygame
 import chess
+import random
+import tkinter as tk
+from tkinter import messagebox
 
+# Initialisation de pygame
 pygame.init()
 
+# Paramètres de la fenêtre
 WIDTH, HEIGHT = 800, 800
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
@@ -19,6 +23,10 @@ PIECE_FILES = {
 
 PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
 
+# Créer la fenêtre Pygame
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Jeu d'échecs")
+
 def load_pieces():
     pieces = {}
     for piece, filename in PIECE_FILES.items():
@@ -30,9 +38,7 @@ def load_pieces():
 PIECES = load_pieces()
 board = chess.Board()
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jeu d'échecs")
-
+# Définition des fonctions de dessin du jeu
 def draw_board():
     for row in range(ROWS):
         for col in range(COLS):
@@ -169,48 +175,65 @@ def reset_game():
     board = chess.Board()  # Reset the board to the initial state
     game_over = False  # Set game_over flag to False
 
-# Main loop
-running = True
-selected_square = None
-game_over = False  # Flag to check if the game is over
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-            pos = pygame.mouse.get_pos()
-            clicked_square = get_square_under_mouse(pos)
-            if selected_square is None:
-                if board.piece_at(clicked_square):
-                    selected_square = clicked_square
-            else:
-                move = chess.Move(selected_square, clicked_square)
-                if move in board.legal_moves:
-                    piece = board.piece_at(selected_square)
-                    if piece.symbol().lower() == 'p' and (chess.square_rank(clicked_square) == 0 or chess.square_rank(clicked_square) == 7):
-                        # Promotion logic
-                        promotion = promote_pawn()  # Call the promote_pawn function for user input
-                        move.promotion = promotion
-                    board.push(move)
-                selected_square = None
+def random_move():
+    # Get a list of all legal moves
+    legal_moves = list(board.legal_moves)
+    
+    # Choose a random move
+    return random.choice(legal_moves)
 
-    # Vérification de la fin de partie (échec et mat, pat ou trois répétitions)
-    if board.is_checkmate():
-        winner = "Les blancs" if board.turn == chess.BLACK else "Les noirs"
-        game_over = True
-        if display_winner(winner) == "replay":
-            reset_game()  # Reset the game if "Rejouer" is clicked
-    elif board.is_stalemate():  # Vérification du pat
-        game_over = True
-        if display_draw("Match nul! (Pat)") == "replay":
-            reset_game()  # Reset the game if "Rejouer" is clicked
-    elif board.is_repetition(3):  # Vérification de la règle des trois répétitions
-        game_over = True
-        if display_draw("Match nul! (Trois répétitions)") == "replay":
-            reset_game()  # Reset the game if "Rejouer" is clicked
+# Fonction IA
+def play_with_ai():
+    global board, game_over
+    game_over = False
+    turn = True  # True: White's turn, False: Black's turn
 
-    draw_board()
-    draw_pieces()
-    pygame.display.flip()
+    while not game_over:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+                square = get_square_under_mouse(event.pos)
+                if square != -1:
+                    piece = board.piece_at(square)
+                    if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
+                        selected_square = square
+                    elif selected_square != -1:
+                        move = chess.Move(selected_square, square)
+                        if move in board.legal_moves:
+                            board.push(move)
+                            selected_square = -1
+                            turn = not turn
 
-pygame.quit()
+        # Si c'est le tour de l'IA, effectuer un mouvement aléatoire
+        if not turn:
+            move = random_move()
+            board.push(move)
+
+        draw_board()
+        draw_pieces()
+        pygame.display.flip()
+
+def start_game():
+    if on_mode_select("IA"):
+        
+
+# Création de la fenêtre Tkinter pour le menu
+def menu_window():
+    window = tk.Tk()
+    window.title("Menu du jeu d'échecs")
+    
+    tk.Label(window, text="Choisissez un mode de jeu", font=("Arial", 24)).pack(pady=20)
+
+    def on_mode_select(mode):
+        window.destroy()  # Fermer la fenêtre Tkinter
+        start_game(mode)  # Lancer le jeu
+
+    tk.Button(window, text="Contre l'IA", font=("Arial", 16), command=lambda: on_mode_select("AI")).pack(pady=10)
+    tk.Button(window, text="2 Joueurs", font=("Arial", 16), command=lambda: on_mode_select("2 Players")).pack(pady=10)
+
+    window.mainloop()  # Lancer la boucle Tkinter
+
+# Lancer le menu
+menu_window()
