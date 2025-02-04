@@ -80,17 +80,26 @@ def promote_pawn(color):
             return options[choice]
         print("Choix invalide. Veuillez entrer Q, R, B ou N.")
 
-def display_winner(winner):
+def restart_game():
+    """
+    Réinitialise l'état du jeu pour recommencer une nouvelle partie.
+    """
+    global board, game_over
+    board = chess.Board()  # Réinitialiser l'échiquier
+    game_over = False  # Remettre le flag de fin de jeu à False
+
+
+def display_winner(winner, mode):
     font = pygame.font.Font(None, 72)
     text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
-    
+
     # Create "Rejouer" button
     button_width, button_height = 200, 60
     button_x = WIDTH // 2 - button_width // 2
     button_y = HEIGHT // 2 + 100
     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
+
     # Create "Quitter" button
     quit_button_y = HEIGHT // 2 + 200
     quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
@@ -102,7 +111,8 @@ def display_winner(winner):
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
-                    return "replay"
+                    start_game(mode)  # Relancer le jeu avec le même mode
+                    return
                 elif quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
                     exit()
@@ -122,7 +132,7 @@ def display_winner(winner):
 
         pygame.display.flip()
 
-def display_draw(message):
+def display_draw(message, mode):
     font = pygame.font.Font(None, 72)
     text = font.render(message, True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
@@ -132,7 +142,7 @@ def display_draw(message):
     button_x = WIDTH // 2 - button_width // 2
     button_y = HEIGHT // 2 + 100
     button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
+
     # Create "Quitter" button
     quit_button_y = HEIGHT // 2 + 200
     quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
@@ -144,7 +154,8 @@ def display_draw(message):
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
-                    return "replay"
+                    start_game(mode)  # Relancer le jeu avec le même mode
+                    return
                 elif quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
                     exit()
@@ -163,6 +174,8 @@ def display_draw(message):
         screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
 
         pygame.display.flip()
+
+
 
 def reset_game():
     global board, game_over
