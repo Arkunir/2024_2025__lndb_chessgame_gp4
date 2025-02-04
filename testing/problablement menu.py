@@ -15,11 +15,17 @@ SQUARE_SIZE = WIDTH // COLS
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
-ASSETS_PATH = "game_chess/assets/Pieces/Type_1/"
+ASSETS_PATH = "game_chess/assets/Pieces/Type_4/"
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
 }
+
+# ASSETS_PATH = "game_chess/assets/Pieces/Type_5/"
+# PIECE_FILES = {
+#     'P': "w.png", 'N': "w.png", 'B': "w.png", 'R': "w.png", 'Q': "w.png", 'K': "w.png",
+#     'p': "b.png", 'n': "b.png", 'b': "b.png", 'r': "b.png", 'q': "b.png", 'k': "b.png"
+# }
 
 PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
 
