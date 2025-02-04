@@ -15,7 +15,11 @@ SQUARE_SIZE = WIDTH // COLS
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
+<<<<<<< Updated upstream:testing/jeu_correct/Jeu_Principal.py
 ASSETS_PATH = "game_chess/assets/Pieces/Type_2/"
+=======
+ASSETS_PATH = "game_chess/assets/Pieces/Type_1/"
+>>>>>>> Stashed changes:testing/chesstestdont give ma any trouble.py
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
@@ -60,6 +64,7 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
+<<<<<<< Updated upstream:testing/jeu_correct/Jeu_Principal.py
 def promote_pawn(color):
     """
     Demande à l'utilisateur la pièce dans laquelle il veut promouvoir le pion.
@@ -79,6 +84,130 @@ def promote_pawn(color):
         if choice in options:
             return options[choice]
         print("Choix invalide. Veuillez entrer Q, R, B ou N.")
+=======
+
+def reset_game():
+    global board, game_over
+    board = chess.Board()  # Réinitialiser l'échiquier à l'état initial
+    game_over = False  # Remettre le flag de fin de jeu à False
+
+def display_winner(winner):
+    font = pygame.font.Font(None, 72)
+    text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
+    
+    # Create "Rejouer" button
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT // 2 + 100
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+    
+    # Create "Quitter" button
+    quit_button_y = HEIGHT // 2 + 200
+    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):  # Rejouer
+                    reset_game()  # Réinitialiser l'échiquier
+                    return start_game("AI")  # Relancer le jeu dans le mode IA, ou remplacer "AI" par le mode choisi
+                elif quit_button_rect.collidepoint(event.pos):  # Quitter
+                    pygame.quit()
+                    exit()
+
+        screen.fill((0, 0, 0))  # Background black
+        screen.blit(text, text_rect)
+
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
+        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
+
+        # Draw the "Quitter" button (red with white text)
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
+        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
+        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
+
+        pygame.display.flip()
+>>>>>>> Stashed changes:testing/chesstestdont give ma any trouble.py
+
+def display_draw(message):
+    font = pygame.font.Font(None, 72)
+    text = font.render(message, True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
+    # Create "Rejouer" button
+    button_width, button_height = 200, 60
+    button_x = WIDTH // 2 - button_width // 2
+    button_y = HEIGHT // 2 + 100
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+    
+    # Create "Quitter" button
+    quit_button_y = HEIGHT // 2 + 200
+    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):  # Rejouer
+                    reset_game()  # Réinitialiser l'échiquier
+                    return start_game("AI")  # Relancer le jeu dans le mode IA, ou remplacer "AI" par le mode choisi
+                elif quit_button_rect.collidepoint(event.pos):  # Quitter
+                    pygame.quit()
+                    exit()
+
+        screen.fill((0, 0, 0))  # Background black
+        screen.blit(text, text_rect)
+
+        # Draw the "Rejouer" button (white with black text)
+        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
+        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
+        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
+
+        # Draw the "Quitter" button (red with white text)
+        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
+        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
+        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
+
+        pygame.display.flip()
+
+
+def promote_pawn(color):
+    """
+    Demande à l'utilisateur la pièce dans laquelle il veut promouvoir le pion.
+    """
+    options = {
+        'Q': chess.QUEEN,
+        'R': chess.ROOK,
+        'B': chess.BISHOP,
+        'N': chess.KNIGHT
+    }
+
+    def on_button_click(piece):
+        selected_piece.set(piece)
+        window.destroy()
+
+    window = tk.Tk()
+    window.title("Promotion de Pion")
+    selected_piece = tk.StringVar()
+
+    label = tk.Label(window, text=f"Promotion {('Blanc' if color == chess.WHITE else 'Noir')} : Choisissez une pièce")
+    label.pack()
+
+    for key in options.keys():
+        button = tk.Button(window, text=key, command=lambda k=key: on_button_click(k))
+        button.pack(side=tk.LEFT)
+
+    window.mainloop()
+
+    return options[selected_piece.get()]
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
