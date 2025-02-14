@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import Menu
-import subprocess
+from Jeu_Principal import start_game  # Import the start_game function
 
 def open_new_game(selected_skin, selected_mode):
-    # Call Jeu_Principal.py with the selected skin and mode
-    subprocess.Popen(['python', 'testing/jeu_correct/Jeu_Principal.py', selected_skin, selected_mode])
+    # Directly call the start_game function with the selected mode
+    start_game(selected_mode)
 
     # Create a new window for starting a new game
     new_game_window = tk.Toplevel()
