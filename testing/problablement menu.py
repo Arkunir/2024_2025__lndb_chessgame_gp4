@@ -138,6 +138,18 @@ def display_winner(winner, mode):
 
         pygame.display.flip()
 
+def handle_promotion(piece, square, color):
+    """
+    Cette fonction gère la promotion d'un pion lorsqu'il atteint la dernière rangée.
+    """
+    if piece.symbol().upper() == 'P' and (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
+        # Demande à l'utilisateur de choisir une pièce pour la promotion
+        promotion_choice = promote_pawn(color)
+        move = chess.Move(square, square)  # Créer le mouvement de promotion
+        move.promotion = promotion_choice  # Affecter la promotion au mouvement
+        return move
+    return None  # Retourner None si ce n'est pas un pion ou s'il n'atteint pas la dernière rangée
+
 def display_draw(message, mode):
     font = pygame.font.Font(None, 72)
     text = font.render(message, True, (255, 255, 255))
@@ -220,12 +232,11 @@ def play_with_ai():
 
                         # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
-                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
-                                # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE)
-                                move = chess.Move(selected_square, square, promotion=promotion_piece)
-
+                            # Gérer la promotion du pion
+                            promotion_move = handle_promotion(board.piece_at(selected_square), square, chess.WHITE)
+                            if promotion_move:
+                                move = promotion_move  # Remplacer le mouvement par celui de la promotion
+                                
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
                             turn = not turn  # Passer au tour de l'IA
@@ -244,6 +255,19 @@ def play_with_ai():
                     turn = not turn
                 else:
                     game_over = True
+
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
+
+        # Vérifier les conditions de fin de partie
+        if board.is_checkmate():
+            winner = "Noir" if not turn else "Blanc"
+            display_winner(winner)
+            game_over = True
+        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
+            display_draw("Match nul!")
+            game_over = True
 
         draw_board()  # Dessiner le plateau
         draw_pieces()  # Dessiner les pièces
