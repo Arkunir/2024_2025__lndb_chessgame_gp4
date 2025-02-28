@@ -68,7 +68,7 @@ def get_square_under_mouse(pos):
 
 def promote_pawn(color):
     """
-    Demande à l'utilisateur la pièce dans laquelle il veut promouvoir le pion.
+    Demande à l'utilisateur de choisir une pièce pour la promotion du pion.
     """
     options = {
         'Q': chess.QUEEN,
@@ -77,14 +77,22 @@ def promote_pawn(color):
         'N': chess.KNIGHT
     }
 
-    while True:
-        # Afficher un choix à l'utilisateur
-        prompt = f"Promotion {('Blanc' if color == chess.WHITE else 'Noir')} : Choisissez une pièce (Q, R, B, N) : "
-        choice = input(prompt).upper()
+    # Créer une fenêtre Tkinter pour la promotion
+    window = tk.Tk()
+    window.title("Promotion de Pion")
 
-        if choice in options:
-            return options[choice]
-        print("Choix invalide. Veuillez entrer Q, R, B ou N.")
+    def on_select(piece):
+        window.destroy()
+        return piece
+
+    for text, piece in options.items():
+        button = tk.Button(window, text=text, command=lambda p=piece: on_select(p))
+        button.pack()
+
+    window.mainloop()
+
+    return None  # Return value will be set in the button callback
+
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
@@ -210,8 +218,10 @@ def play_with_ai():
                             if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
                                (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
                                 # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE)
-                                move = chess.Move(selected_square, square, promotion=promotion_piece)
+                            promotion_piece = promote_pawn(chess.WHITE)  # This will now return the selected piece
+
+
+                            move = chess.Move(selected_square, square, promotion=promotion_piece)
 
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
@@ -273,8 +283,12 @@ def play_with_two_players():
                             if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
                                (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
                                 # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
-                                move = chess.Move(selected_square, square, promotion=promotion_piece)
+                            promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)  # This will now return the selected piece
+
+
+
+
+                    move = chess.Move(selected_square, square, promotion=promotion_piece)
 
                             board.push(move)
                             selected_square = -1  # Réinitialiser la case sélectionnée
@@ -356,8 +370,6 @@ def menu_window():
     
     tk.Button(window, text="Jouer contre l'IA", command=start_ai_game).pack(pady=10)
     tk.Button(window, text="Jouer à 2 joueurs", command=start_two_player_game).pack(pady=10)
-    tk.Button(window, text="IA vs IA", command=start_ia_vs_ia_game).pack(pady=10)
-    
     window.mainloop()
 
 # Démarrer le menu
