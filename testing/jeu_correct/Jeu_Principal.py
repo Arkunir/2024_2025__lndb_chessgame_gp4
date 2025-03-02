@@ -3,6 +3,8 @@ import chess
 import random
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import simpledialog
+import chess
 
 # Initialisation de pygame
 pygame.init()
@@ -257,6 +259,34 @@ def play_with_two_players():
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
             game_over = True
+
+
+
+def check_pawn_promotion(board, move):
+    """
+    Vérifie si un pion est déplacé vers la dernière ligne et propose une promotion via une fenêtre Tkinter.
+    """
+    piece = board.piece_at(move.from_square)
+    if piece and piece.symbol().lower() == 'p':
+        last_rank = 7 if piece.color == chess.WHITE else 0
+        if chess.square_rank(move.to_square) == last_rank:
+            promotion_choice = prompt_promotion_choice()
+            return chess.Move(move.from_square, move.to_square, promotion=promotion_choice)
+    return move
+
+def prompt_promotion_choice():
+    """
+    Affiche une fenêtre Tkinter pour choisir la pièce de promotion.
+    """
+    root = tk.Tk()
+    root.withdraw()  # Masquer la fenêtre principale Tkinter
+    
+    options = {'Dame': chess.QUEEN, 'Tour': chess.ROOK, 'Fou': chess.BISHOP, 'Cavalier': chess.KNIGHT}
+    choice = simpledialog.askstring("Promotion", "Choisissez la pièce de promotion: Dame, Tour, Fou, Cavalier")
+    
+    root.destroy()
+    return options.get(choice, chess.QUEEN)  # Retourne la Dame par défaut si choix invalide
+
 
 def play_ia_vs_ia():
     global board, game_over
