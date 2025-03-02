@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 from menu_regles import open_rules
-from menu_options import open_options  # Ensure this is included
-from menu_jouer import open_new_game  # Import the new function
+from menu_options import open_options
+from menu_jouer import open_new_game  # Appel au menu de jeu sans démarrer le jeu principal
 
 def quit_game():
     if messagebox.askyesno("Quitter", "Êtes-vous sûr de vouloir quitter le jeu ?"):
@@ -34,7 +34,7 @@ root.attributes('-fullscreen', True)
 title_label = tk.Label(
     root,
     text="Jeu d'Échecs",
-    font=("Arial", 48, "bold"),  # Taille de police augmentée
+    font=("Arial", 48, "bold"),
     fg="#ecf0f1",
     bg="#2c3e50"
 )
@@ -46,7 +46,7 @@ button_frame.pack(pady=20)
 
 # Boutons du menu
 buttons = [
-    ("Nouvelle Partie", open_new_game),  # Updated to call open_new_game
+    ("Nouvelle Partie", open_new_game),  # Appel du menu de jeu sans démarrer le jeu principal
     ("Options", open_options),
 ]
 

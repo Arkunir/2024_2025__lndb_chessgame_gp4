@@ -1,18 +1,15 @@
 import tkinter as tk
 from tkinter import Menu
-from Jeu_Principal import start_game  # Import the start_game function
+from Jeu_Principal import start_game  # Assure-toi que cette importation est correcte
 
-def open_new_game(selected_skin, selected_mode):
-    # Directly call the start_game function with the selected mode
-    start_game(selected_mode)
-
-    # Create a new window for starting a new game
+def open_new_game(selected_skin=None, selected_mode=None):
+    # Créer une nouvelle fenêtre pour démarrer une nouvelle partie
     new_game_window = tk.Toplevel()
     new_game_window.title("Nouvelle Partie")
-    new_game_window.attributes("-fullscreen", True)  # Fullscreen mode
-    new_game_window.configure(bg="#2c3e50")  # Background color
+    new_game_window.attributes("-fullscreen", True)  # Mode plein écran
+    new_game_window.configure(bg="#2c3e50")  # Couleur de fond
 
-    # Title of the new game
+    # Titre de la nouvelle partie
     title_label = tk.Label(
         new_game_window,
         text="Démarrer une Nouvelle Partie",
@@ -22,11 +19,11 @@ def open_new_game(selected_skin, selected_mode):
     )
     title_label.pack(pady=20)
 
-    # Container for new game options
+    # Conteneur pour les options de la nouvelle partie
     options_frame = tk.Frame(new_game_window, bg="#2c3e50")
     options_frame.pack(pady=15, padx=20, fill="both", expand=True)
 
-    # Example options for starting a new game
+    # Exemple d'options pour démarrer une nouvelle partie
     start_button = tk.Button(
         options_frame,
         text="Commencer",
@@ -35,11 +32,11 @@ def open_new_game(selected_skin, selected_mode):
         bg="#3498db",
         activeforeground="#ecf0f1",
         activebackground="#2980b9",
-        command=lambda: print("Nouvelle partie commencée!")  # Placeholder action
+        command=lambda: start_game(selected_mode)  # Appel à la fonction start_game dans jeu_principal
     )
     start_button.pack(pady=10)
 
-    # Menu for changing skin
+    # Menu pour changer de skin
     skin_button = tk.Menubutton(
         options_frame,
         text="Changer de Skin",
@@ -51,19 +48,21 @@ def open_new_game(selected_skin, selected_mode):
     )
     skin_button.pack(pady=10)
 
-    # Create the dropdown menu for skins
+    # Créer le menu déroulant pour les skins
     skin_menu = Menu(skin_button, tearoff=0)
     skin_button["menu"] = skin_menu
 
-    # Function to change the button text based on selection
+    # Fonction pour changer le type de skin
     def change_skin_type(skin_type):
         skin_button.config(text=skin_type)
 
-    # Add options to the dropdown menu
+    # Ajouter des options au menu déroulant
     skin_menu.add_command(label="Type_1", command=lambda: change_skin_type("Type_1"))
     skin_menu.add_command(label="Type_2", command=lambda: change_skin_type("Type_2"))
+    skin_menu.add_command(label="Type_3", command=lambda: change_skin_type("Type_3"))
+    skin_menu.add_command(label="Type_4", command=lambda: change_skin_type("Type_4"))
 
-    # Menu for game mode
+    # Menu pour le mode de jeu
     game_mode_button = tk.Menubutton(
         options_frame,
         text="Mode De Jeu",
@@ -75,41 +74,41 @@ def open_new_game(selected_skin, selected_mode):
     )
     game_mode_button.pack(pady=10)
 
-    # Create the dropdown menu for game modes
+    # Créer le menu déroulant pour les modes de jeu
     game_mode_menu = Menu(game_mode_button, tearoff=0)
     game_mode_button["menu"] = game_mode_menu
 
-    # Function to change the button text based on selection
+    # Fonction pour changer le mode de jeu
     def change_game_mode(mode):
         game_mode_button.config(text=mode)
 
-    # Add options to the dropdown menu
+    # Ajouter des options au menu déroulant
     game_mode_menu.add_command(label="Joueur vs Joueur", command=lambda: change_game_mode("Joueur vs Joueur"))
     game_mode_menu.add_command(label="Joueur vs IA", command=lambda: change_game_mode("Joueur vs IA"))
     game_mode_menu.add_command(label="IA vs IA", command=lambda: change_game_mode("IA vs IA"))
 
-    # Button to toggle fullscreen or exit fullscreen
+    # Bouton pour basculer en plein écran ou quitter le plein écran
     fullscreen_button = tk.Button(
         new_game_window,
         text="Quitter le Plein Écran",
         font=("Arial", 16),
         fg="#ecf0f1",
-        bg="#e74c3c",  # Red color
+        bg="#e74c3c",  # Couleur rouge
         activeforeground="#ecf0f1",
-        activebackground="#c0392b",  # Dark red on hover
-        command=lambda: toggle_fullscreen(new_game_window, fullscreen_button)  # Toggle fullscreen
+        activebackground="#c0392b",  # Rouge foncé au survol
+        command=lambda: toggle_fullscreen(new_game_window, fullscreen_button)  # Bascule du plein écran
     )
     fullscreen_button.pack(pady=20)
 
-    # Button to close the window
+    # Bouton pour fermer la fenêtre
     exit_button = tk.Button(
         new_game_window,
         text="Fermer",
         font=("Arial", 16),
         fg="#ecf0f1",
-        bg="#e74c3c",  # Normal color
+        bg="#e74c3c",  # Couleur normale
         activeforeground="#ecf0f1",
-        activebackground="#c0392b",  # Dark red on hover
+        activebackground="#c0392b",  # Rouge foncé au survol
         command=new_game_window.destroy
     )
     exit_button.pack(pady=10)
