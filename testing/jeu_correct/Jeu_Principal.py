@@ -3,6 +3,8 @@ import chess
 import random
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import simpledialog
+import chess
 
 # Initialisation de pygame
 pygame.init()
@@ -73,15 +75,9 @@ def promote_pawn(color):
     for text, piece in options.items():
         tk.Button(window, text=text, command=lambda p=piece: on_select(p)).pack()
 
-<<<<<<< Updated upstream
     window.wait_window()  # Attend que la fenêtre soit fermée
     return options.get(promotion_choice.get(), chess.QUEEN)  # Retourne la promotion (Dame par défaut)
 
-=======
-    window.mainloop()
-
-    return piece  # Return the selected piece
->>>>>>> Stashed changes
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
@@ -182,7 +178,6 @@ def play_with_ai():
 
                         # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
-<<<<<<< Updated upstream
                             if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P':
                                 if chess.square_rank(square) == 7 or chess.square_rank(square) == 0:
                                     promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
@@ -190,19 +185,6 @@ def play_with_ai():
                             board.push(move)
                             selected_square = -1
                             turn = not turn
-=======
-                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
-                                # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE)  # This will now return the selected piece
-                                if promotion_piece is not None:
-                                    move = chess.Move(selected_square, square, promotion=promotion_piece)
-                                    board.push(move)  # Push the move to the board
-                            else:
-                                board.push(move)  # Push the move to the board
-                            selected_square = -1  # Réinitialiser la case sélectionnée
-                            turn = not turn  # Passer au tour de l'IA
->>>>>>> Stashed changes
 
         if not turn and not game_over:
             if board.is_checkmate():
@@ -256,7 +238,6 @@ def play_with_two_players():
 
                         # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
-<<<<<<< Updated upstream
                             if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P':
                                 if chess.square_rank(square) == 7 or chess.square_rank(square) == 0:
                                     promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
@@ -265,21 +246,6 @@ def play_with_two_players():
                             selected_square = -1
                             turn = not turn
 
-=======
-                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P' and \
-                               (chess.square_rank(square) == 7 or chess.square_rank(square) == 0):
-                                # Appeler la fonction de promotion avec la couleur correcte
-                                promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)  # This will now return the selected piece
-                                if promotion_piece is not None:
-                                    move = chess.Move(selected_square, square, promotion=promotion_piece)
-                                    board.push(move)  # Push the move to the board
-                            else:
-                                board.push(move)  # Push the move to the board
-                            selected_square = -1  # Réinitialiser la case sélectionnée
-                            turn = not turn  # Changer de joueur
-                        else:
-                            selected_square = -1  # Annuler la sélection si le mouvement est illégal
->>>>>>> Stashed changes
 
         draw_board()  # Dessiner le plateau
         draw_pieces()  # Dessiner les pièces
@@ -293,6 +259,34 @@ def play_with_two_players():
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
             game_over = True
+
+
+
+def check_pawn_promotion(board, move):
+    """
+    Vérifie si un pion est déplacé vers la dernière ligne et propose une promotion via une fenêtre Tkinter.
+    """
+    piece = board.piece_at(move.from_square)
+    if piece and piece.symbol().lower() == 'p':
+        last_rank = 7 if piece.color == chess.WHITE else 0
+        if chess.square_rank(move.to_square) == last_rank:
+            promotion_choice = prompt_promotion_choice()
+            return chess.Move(move.from_square, move.to_square, promotion=promotion_choice)
+    return move
+
+def prompt_promotion_choice():
+    """
+    Affiche une fenêtre Tkinter pour choisir la pièce de promotion.
+    """
+    root = tk.Tk()
+    root.withdraw()  # Masquer la fenêtre principale Tkinter
+    
+    options = {'Dame': chess.QUEEN, 'Tour': chess.ROOK, 'Fou': chess.BISHOP, 'Cavalier': chess.KNIGHT}
+    choice = simpledialog.askstring("Promotion", "Choisissez la pièce de promotion: Dame, Tour, Fou, Cavalier")
+    
+    root.destroy()
+    return options.get(choice, chess.QUEEN)  # Retourne la Dame par défaut si choix invalide
+
 
 def play_ia_vs_ia():
     global board, game_over
@@ -355,13 +349,8 @@ def menu_window():
     
     tk.Button(window, text="Jouer contre l'IA", command=start_ai_game).pack(pady=10)
     tk.Button(window, text="Jouer à 2 joueurs", command=start_two_player_game).pack(pady=10)
-<<<<<<< Updated upstream
     tk.Button(window, text="IA vs IA", command=start_ia_vs_ia_game).pack(pady=10)
     window.mainloop()
-=======
-    window.mainloop()  # Ensure the game waits for the user's input
-
->>>>>>> Stashed changes
 
 # Démarrer le menu
 menu_window()
