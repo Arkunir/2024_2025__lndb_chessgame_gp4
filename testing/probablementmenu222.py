@@ -9,10 +9,13 @@ import chess
 # Initialisation de pygame
 pygame.init()
 
-# Paramètres de la fenêtre
-WIDTH, HEIGHT = 800, 800
+# Initialisation pour le plein écran
+screen_info = pygame.display.Info()  # Obtenez les informations sur la taille de l'écran
+WIDTH, HEIGHT = screen_info.current_w, screen_info.current_h  # Utilisez la résolution de l'écran
 ROWS, COLS = 8, 8
-SQUARE_SIZE = WIDTH // COLS
+
+# Calcul dynamique de la taille des cases en fonction de la plus petite dimension de l'écran
+SQUARE_SIZE = min(WIDTH, HEIGHT) // 8  # La taille de chaque case est la plus petite dimension de la fenêtre divisée par 8
 
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
@@ -25,14 +28,16 @@ PIECE_FILES = {
 
 PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
 
-# Créer la fenêtre Pygame
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+# Créer la fenêtre Pygame en mode maximisé
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE | pygame.NOFRAME)
 pygame.display.set_caption("Jeu d'échecs")
+
 
 def load_pieces():
     pieces = {}
     for piece, filename in PIECE_FILES.items():
         image = pygame.image.load(ASSETS_PATH + filename)
+        # Redimensionner les pièces pour correspondre à la taille des cases
         image = pygame.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE))
         pieces[piece] = image
     return pieces
@@ -54,8 +59,22 @@ def draw_pieces():
             col = chess.square_file(square)
             row = chess.square_rank(square)
             image = PIECES[piece.symbol()]
+            # Dessiner la pièce à la position appropriée sur le plateau
             screen.blit(image, (col * SQUARE_SIZE, (7 - row) * SQUARE_SIZE))
 
+# Boucle principale
+running = True
+while running:
+    screen.fill((0, 0, 0))  # Remplir l'écran en noir avant de dessiner
+    draw_board()
+    draw_pieces()
+
+    # Gestion des événements (fermer la fenêtre, etc.)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    pygame.display.update()
 def get_square_under_mouse(pos):
     x, y = pos
     col = x // SQUARE_SIZE
