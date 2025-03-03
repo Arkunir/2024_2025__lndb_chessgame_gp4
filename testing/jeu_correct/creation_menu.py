@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 from menu_regles import open_rules
-from menu_options import open_options
 from menu_jouer import open_new_game  # Nous gardons cette fonction pour le menu de jeu
 
 def quit_game():
@@ -47,7 +46,6 @@ button_frame.pack(pady=20)
 # Boutons du menu
 buttons = [
     ("Nouvelle Partie", open_new_game),  # Appelle la fonction de menu de jeu, sans jeu principal
-    ("Options", open_options),
 ]
 
 for text, command in buttons:
