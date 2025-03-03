@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import Menu
 
+# Importer le fichier Jeu_Principal
+import Jeu_Principal  # Assure-toi que le fichier Jeu_Principal.py est dans le même dossier
+
 def open_new_game():
     # Créer une nouvelle fenêtre pour démarrer une nouvelle partie
     new_game_window = tk.Toplevel()
@@ -31,7 +34,7 @@ def open_new_game():
         bg="#3498db",
         activeforeground="#ecf0f1",
         activebackground="#2980b9",
-        command=lambda: print("Jeu commencé")  # Remplace start_game par un simple message
+        command=lambda: Jeu_Principal.menu_window()  # Appel de la fonction menu_window du fichier Jeu_Principal
     )
     start_button.pack(pady=10)
 
