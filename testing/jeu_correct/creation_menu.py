@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from menu_regles import open_rules
 from menu_options import open_options
-from menu_jouer import open_new_game  # Appel au menu de jeu sans démarrer le jeu principal
+from menu_jouer import open_new_game  # Nous gardons cette fonction pour le menu de jeu
 
 def quit_game():
     if messagebox.askyesno("Quitter", "Êtes-vous sûr de vouloir quitter le jeu ?"):
@@ -46,7 +46,7 @@ button_frame.pack(pady=20)
 
 # Boutons du menu
 buttons = [
-    ("Nouvelle Partie", open_new_game),  # Appel du menu de jeu sans démarrer le jeu principal
+    ("Nouvelle Partie", open_new_game),  # Appelle la fonction de menu de jeu, sans jeu principal
     ("Options", open_options),
 ]
 
