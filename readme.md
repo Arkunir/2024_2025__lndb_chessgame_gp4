@@ -38,12 +38,12 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
 Travail en cour:
   - Ajouter le lancement du jeu au menu
   - Création d'une IA complexe
-  - Promotion des pièces
   - Ajouter le Chrono
   - Possibiliter de changer le type de pieces
 
  
 Travail fini:
+  - Promotion des pièces
   - Affichage de texte en fin de partie
   - Création des options
   - Création du plateau
