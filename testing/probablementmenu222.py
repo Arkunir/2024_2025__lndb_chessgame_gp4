@@ -206,11 +206,6 @@ def check_pawn_promotion_on_click(square):
 
             window.destroy()  # Fermer la fenêtre Tkinter
 
-
-
-
-
-
 # Fonction IA
 def play_with_ai():
     global board, game_over, turn
@@ -281,7 +276,6 @@ def play_with_ai():
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
             game_over = True
-
 
 def play_with_two_players():
     global board, game_over, turn
