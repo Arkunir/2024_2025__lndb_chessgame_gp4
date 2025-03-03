@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import Menu
-from Jeu_Principal import start_game  # Assure-toi que cette importation est correcte
 
-def open_new_game(selected_skin=None, selected_mode=None):
+def open_new_game():
     # Créer une nouvelle fenêtre pour démarrer une nouvelle partie
     new_game_window = tk.Toplevel()
     new_game_window.title("Nouvelle Partie")
@@ -23,7 +22,7 @@ def open_new_game(selected_skin=None, selected_mode=None):
     options_frame = tk.Frame(new_game_window, bg="#2c3e50")
     options_frame.pack(pady=15, padx=20, fill="both", expand=True)
 
-    # Exemple d'options pour démarrer une nouvelle partie
+    # Exemple d'options pour démarrer une nouvelle partie (sans appel à start_game)
     start_button = tk.Button(
         options_frame,
         text="Commencer",
@@ -32,7 +31,7 @@ def open_new_game(selected_skin=None, selected_mode=None):
         bg="#3498db",
         activeforeground="#ecf0f1",
         activebackground="#2980b9",
-        command=lambda: start_game(selected_mode)  # Appel à la fonction start_game dans jeu_principal
+        command=lambda: print("Jeu commencé")  # Remplace start_game par un simple message
     )
     start_button.pack(pady=10)
 
@@ -86,6 +85,33 @@ def open_new_game(selected_skin=None, selected_mode=None):
     game_mode_menu.add_command(label="Joueur vs Joueur", command=lambda: change_game_mode("Joueur vs Joueur"))
     game_mode_menu.add_command(label="Joueur vs IA", command=lambda: change_game_mode("Joueur vs IA"))
     game_mode_menu.add_command(label="IA vs IA", command=lambda: change_game_mode("IA vs IA"))
+
+    # **Ajout du menu pour la cadence**
+    cadence_button = tk.Menubutton(
+        options_frame,
+        text="Choisir la Cadence",
+        font=("Arial", 16),
+        fg="#ecf0f1",
+        bg="#1abc9c",  # Couleur verte pour la cadence
+        activeforeground="#ecf0f1",
+        activebackground="#16a085"
+    )
+    cadence_button.pack(pady=10)
+
+    # Créer le menu déroulant pour les cadences
+    cadence_menu = Menu(cadence_button, tearoff=0)
+    cadence_button["menu"] = cadence_menu
+
+    # Fonction pour changer la cadence
+    def change_cadence(cadence):
+        cadence_button.config(text=cadence)
+
+    # Ajouter des options au menu déroulant
+    cadence_menu.add_command(label="2/1", command=lambda: change_cadence("2/1"))
+    cadence_menu.add_command(label="3/2", command=lambda: change_cadence("3/2"))
+    cadence_menu.add_command(label="5/2", command=lambda: change_cadence("5/2"))
+    cadence_menu.add_command(label="10/0", command=lambda: change_cadence("10/0"))
+    cadence_menu.add_command(label="15/5", command=lambda: change_cadence("15/5"))
 
     # Bouton pour basculer en plein écran ou quitter le plein écran
     fullscreen_button = tk.Button(
