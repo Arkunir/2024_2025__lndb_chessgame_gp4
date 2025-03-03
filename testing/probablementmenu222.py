@@ -5,14 +5,18 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
 import chess
+import time  # Importer time pour gérer le minuteur
 
 # Initialisation de pygame
 pygame.init()
 
-# Paramètres de la fenêtre
-WIDTH, HEIGHT = 800, 800
+# Initialisation pour le plein écran
+screen_info = pygame.display.Info()  # Obtenez les informations sur la taille de l'écran
+WIDTH, HEIGHT = screen_info.current_w, screen_info.current_h  # Utilisez la résolution de l'écran
 ROWS, COLS = 8, 8
-SQUARE_SIZE = WIDTH // COLS
+
+# Calcul dynamique de la taille des cases en fonction de la plus petite dimension de l'écran
+SQUARE_SIZE = min(WIDTH, HEIGHT) // 8  # La taille de chaque case est la plus petite dimension de la fenêtre divisée par 8
 
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
@@ -25,20 +29,28 @@ PIECE_FILES = {
 
 PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
 
-# Créer la fenêtre Pygame
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+# Créer la fenêtre Pygame en mode maximisé
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE | pygame.NOFRAME)
 pygame.display.set_caption("Jeu d'échecs")
+
 
 def load_pieces():
     pieces = {}
     for piece, filename in PIECE_FILES.items():
         image = pygame.image.load(ASSETS_PATH + filename)
+        # Redimensionner les pièces pour correspondre à la taille des cases
         image = pygame.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE))
         pieces[piece] = image
     return pieces
 
 PIECES = load_pieces()
 board = chess.Board()
+
+# Variables du minuteur
+time_white = 300  # Temps en secondes pour les Blancs (5 minutes)
+time_black = 300  # Temps en secondes pour les Noirs (5 minutes)
+start_time = time.time()  # Temps de départ du chronomètre
+turn = True  # True = Blanc, False = Noir
 
 # Définition des fonctions de dessin du jeu
 def draw_board():
@@ -54,13 +66,76 @@ def draw_pieces():
             col = chess.square_file(square)
             row = chess.square_rank(square)
             image = PIECES[piece.symbol()]
+            # Dessiner la pièce à la position appropriée sur le plateau
             screen.blit(image, (col * SQUARE_SIZE, (7 - row) * SQUARE_SIZE))
 
+# Fonction de dessin du minuteur
+def draw_timer():
+    global time_white, time_black, start_time, turn
+    if turn:  # Si c'est le tour des Blancs
+        time_white -= (time.time() - start_time)
+    else:  # Si c'est le tour des Noirs
+        time_black -= (time.time() - start_time)
+
+    start_time = time.time()  # Réinitialiser le temps de départ pour le prochain tour
+
+    font = pygame.font.Font(None, 36)
+    white_time_text = font.render(f"Blanc: {int(time_white // 60):02d}:{int(time_white % 60):02d}", True, (255, 255, 255))
+    black_time_text = font.render(f"Noir: {int(time_black // 60):02d}:{int(time_black % 60):02d}", True, (255, 255, 255))
+
+    screen.blit(white_time_text, (10, 10))  # Affichage du temps des Blancs
+    screen.blit(black_time_text, (WIDTH - black_time_text.get_width() - 10, 10))  # Affichage du temps des Noirs
+
+# Fonction pour gérer les déplacements des pièces
 def get_square_under_mouse(pos):
     x, y = pos
     col = x // SQUARE_SIZE
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
+
+# Boucle principale
+running = True
+selected_square = -1
+while running:
+    screen.fill((0, 0, 0))  # Remplir l'écran en noir avant de dessiner
+    draw_board()
+    draw_pieces()
+
+    draw_timer()  # Afficher les chronomètres
+
+    # Gestion des événements (fermer la fenêtre, sélection des pièces, etc.)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            square = get_square_under_mouse(event.pos)
+            if square != -1:
+                piece = board.piece_at(square)
+
+                if selected_square == -1:  # Sélectionner une pièce
+                    if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
+                        selected_square = square
+                else:  # Déplacer la pièce sélectionnée
+                    move = chess.Move(selected_square, square)
+                    if move in board.legal_moves:
+                        board.push(move)
+                        turn = not turn  # Changer de tour
+                        selected_square = -1
+                        start_time = time.time()  # Redémarrer le temps pour le joueur suivant
+
+    pygame.display.update()
+
+    # Vérifier si le temps d'un joueur est écoulé
+    if time_white <= 0 or time_black <= 0:  
+        winner = "Noir" if time_white <= 0 else "Blanc"
+        # Afficher un message de fin de partie
+        font = pygame.font.Font(None, 72)
+        text = font.render(f"{winner} a gagné !", True, (255, 255, 255))
+        screen.blit(text, ((WIDTH - text.get_width()) // 2, (HEIGHT - text.get_height()) // 2))
+        pygame.display.update()
+        pygame.time.wait(3000)  # Attendre 3 secondes avant de fermer
+        running = False
 
 
 
