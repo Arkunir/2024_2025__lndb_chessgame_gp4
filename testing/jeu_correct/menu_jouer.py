@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Menu
 from Jeu_Principal import main_game
+from menu_jouer import open_new_game  # Nous gardons cette fonction pour le menu de jeu
 
 def open_new_game():
     new_game_window = tk.Toplevel()
