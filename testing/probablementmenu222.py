@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog
 import chess
+import time  # Importer time pour gérer le minuteur
 
 # Initialisation de pygame
 pygame.init()
@@ -45,6 +46,12 @@ def load_pieces():
 PIECES = load_pieces()
 board = chess.Board()
 
+# Variables du minuteur
+time_white = 300  # Temps en secondes pour les Blancs (5 minutes)
+time_black = 300  # Temps en secondes pour les Noirs (5 minutes)
+start_time = time.time()  # Temps de départ du chronomètre
+turn = True  # True = Blanc, False = Noir
+
 # Définition des fonctions de dessin du jeu
 def draw_board():
     for row in range(ROWS):
@@ -62,24 +69,73 @@ def draw_pieces():
             # Dessiner la pièce à la position appropriée sur le plateau
             screen.blit(image, (col * SQUARE_SIZE, (7 - row) * SQUARE_SIZE))
 
-# Boucle principale
-running = True
-while running:
-    screen.fill((0, 0, 0))  # Remplir l'écran en noir avant de dessiner
-    draw_board()
-    draw_pieces()
+# Fonction de dessin du minuteur
+def draw_timer():
+    global time_white, time_black, start_time, turn
+    if turn:  # Si c'est le tour des Blancs
+        time_white -= (time.time() - start_time)
+    else:  # Si c'est le tour des Noirs
+        time_black -= (time.time() - start_time)
 
-    # Gestion des événements (fermer la fenêtre, etc.)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    start_time = time.time()  # Réinitialiser le temps de départ pour le prochain tour
 
-    pygame.display.update()
+    font = pygame.font.Font(None, 36)
+    white_time_text = font.render(f"Blanc: {int(time_white // 60):02d}:{int(time_white % 60):02d}", True, (255, 255, 255))
+    black_time_text = font.render(f"Noir: {int(time_black // 60):02d}:{int(time_black % 60):02d}", True, (255, 255, 255))
+
+    screen.blit(white_time_text, (10, 10))  # Affichage du temps des Blancs
+    screen.blit(black_time_text, (WIDTH - black_time_text.get_width() - 10, 10))  # Affichage du temps des Noirs
+
+# Fonction pour gérer les déplacements des pièces
 def get_square_under_mouse(pos):
     x, y = pos
     col = x // SQUARE_SIZE
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
+
+# Boucle principale
+running = True
+selected_square = -1
+while running:
+    screen.fill((0, 0, 0))  # Remplir l'écran en noir avant de dessiner
+    draw_board()
+    draw_pieces()
+
+    draw_timer()  # Afficher les chronomètres
+
+    # Gestion des événements (fermer la fenêtre, sélection des pièces, etc.)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            square = get_square_under_mouse(event.pos)
+            if square != -1:
+                piece = board.piece_at(square)
+
+                if selected_square == -1:  # Sélectionner une pièce
+                    if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
+                        selected_square = square
+                else:  # Déplacer la pièce sélectionnée
+                    move = chess.Move(selected_square, square)
+                    if move in board.legal_moves:
+                        board.push(move)
+                        turn = not turn  # Changer de tour
+                        selected_square = -1
+                        start_time = time.time()  # Redémarrer le temps pour le joueur suivant
+
+    pygame.display.update()
+
+    # Vérifier si le temps d'un joueur est écoulé
+    if time_white <= 0 or time_black <= 0:  
+        winner = "Noir" if time_white <= 0 else "Blanc"
+        # Afficher un message de fin de partie
+        font = pygame.font.Font(None, 72)
+        text = font.render(f"{winner} a gagné !", True, (255, 255, 255))
+        screen.blit(text, ((WIDTH - text.get_width()) // 2, (HEIGHT - text.get_height()) // 2))
+        pygame.display.update()
+        pygame.time.wait(3000)  # Attendre 3 secondes avant de fermer
+        running = False
 
 
 
