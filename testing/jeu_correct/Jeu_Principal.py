@@ -9,6 +9,22 @@ import chess
 # Initialisation de pygame
 pygame.init()
 
+# Fenêtre Tkinter pour sélectionner un skin
+def select_skin():
+    window = tk.Tk()
+    window.withdraw()  # Cacher la fenêtre principale
+
+    skin_options = {"1": "Type_1", "2": "Type_2", "3": "Type_3", "4": "Type_4"}
+    selected_skin = simpledialog.askstring("Sélection du skin", "Choisissez un skin (1, 2, 3 ou 4) :", parent=window)
+
+    if selected_skin in skin_options:
+        return f"testing/jeu_correct/assets/{skin_options[selected_skin]}/"
+    else:
+        return "testing/jeu_correct/assets/Type_2/"  # Valeur par défaut
+
+# Définir le chemin des assets en fonction du choix de l'utilisateur
+ASSETS_PATH = select_skin()
+
 # Paramètres de la fenêtre
 WIDTH, HEIGHT = 800, 800
 ROWS, COLS = 8, 8
