@@ -3,19 +3,9 @@ import chess
 import random
 import tkinter as tk
 from tkinter import messagebox
-import time
 
-
-
-
-# Nouveau fichier encoreuntest.py sans "root"
-
-# Ajoutez ici le code nécessaire sans utiliser "root"
-def main():
-    print("Ceci est un exemple de code sans 'root'.")
-
-if __name__ == "__main__":
-    main()
+# Initialisation de pygame
+pygame.init()
 
 # Paramètres de la fenêtre
 WIDTH, HEIGHT = 800, 800
@@ -25,7 +15,7 @@ SQUARE_SIZE = WIDTH // COLS
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
-ASSETS_PATH = "game_chess/assets/"
+ASSETS_PATH = "testing/jeu_correct/assets/Type_2/"
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
@@ -70,40 +60,32 @@ def get_square_under_mouse(pos):
     row = 7 - (y // SQUARE_SIZE)
     return chess.square(col, row)
 
-def promote_pawn():
-    """Fenêtre de promotion pour choisir la pièce."""
-    root = tk.Tk()
-    root.title("Promotion du pion")
-    root.geometry("300x150")  # Taille de la fenêtre
-
+def promote_pawn(color):
+    options = {'Q': chess.QUEEN, 'R': chess.ROOK, 'B': chess.BISHOP, 'N': chess.KNIGHT}
     promotion_choice = tk.StringVar()
 
-    def select_piece(choice):
-        promotion_choice.set(choice)
-        root.destroy()
+    def on_select(piece):
+        promotion_choice.set(piece)
+        window.destroy()
 
-    tk.Label(root, text="Choisissez une pièce pour la promotion :").pack(pady=10)
-    tk.Button(root, text="Dame (Q)", command=lambda: select_piece('Q')).pack(pady=5)
-    tk.Button(root, text="Tour (R)", command=lambda: select_piece('R')).pack(pady=5)
-    tk.Button(root, text="Cavalier (N)", command=lambda: select_piece('N')).pack(pady=5)
-    tk.Button(root, text="Fou (B)", command=lambda: select_piece('B')).pack(pady=5)
+    window = tk.Tk()
+    window.title("Promotion de Pion")
+    for text, piece in options.items():
+        tk.Button(window, text=text, command=lambda p=piece: on_select(p)).pack()
 
-    root.mainloop()
-    return promotion_choice.get()
+    window.wait_window()  # Attend que la fenêtre soit fermée
+    return options.get(promotion_choice.get(), chess.QUEEN)  # Retourne la promotion (Dame par défaut)
+
 
 def display_winner(winner):
     font = pygame.font.Font(None, 72)
     text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
     
-    # Create "Rejouer" button
+    # Create "Quitter" button
     button_width, button_height = 200, 60
     button_x = WIDTH // 2 - button_width // 2
-    button_y = HEIGHT // 2 + 100
-    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
-    # Create "Quitter" button
-    quit_button_y = HEIGHT // 2 + 200
+    quit_button_y = HEIGHT // 2 + 100
     quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
     while True:
@@ -112,19 +94,12 @@ def display_winner(winner):
                 pygame.quit()
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if button_rect.collidepoint(event.pos):
-                    return "replay"
-                elif quit_button_rect.collidepoint(event.pos):
+                if quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
                     exit()
 
         screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
-
-        # Draw the "Rejouer" button (white with black text)
-        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
-        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
-        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
 
         # Draw the "Quitter" button (red with white text)
         pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
@@ -138,14 +113,10 @@ def display_draw(message):
     text = font.render(message, True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
-    # Create "Rejouer" button
+    # Create "Quitter" button
     button_width, button_height = 200, 60
     button_x = WIDTH // 2 - button_width // 2
-    button_y = HEIGHT // 2 + 100
-    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
-    # Create "Quitter" button
-    quit_button_y = HEIGHT // 2 + 200
+    quit_button_y = HEIGHT // 2 + 100
     quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
 
     while True:
@@ -154,19 +125,12 @@ def display_draw(message):
                 pygame.quit()
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if button_rect.collidepoint(event.pos):
-                    return "replay"
-                elif quit_button_rect.collidepoint(event.pos):
+                if quit_button_rect.collidepoint(event.pos):
                     pygame.quit()
                     exit()
 
         screen.fill((0, 0, 0))  # Background black
         screen.blit(text, text_rect)
-
-        # Draw the "Rejouer" button (white with black text)
-        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
-        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
-        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
 
         # Draw the "Quitter" button (red with white text)
         pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
@@ -185,196 +149,13 @@ def random_move():
     if not legal_moves:
         return None  # Aucun coup légal n'est possible
     return random.choice(legal_moves)
-
-def handle_pawn_promotion(move):
-    root = tk.Tk()
-    """Gère la promotion d'un pion si nécessaire."""
-    if board.is_legal(move):
-        piece = board.piece_at(move.from_square)
-        
-        # Vérification si c'est bien un pion
-        if piece and piece.symbol().upper() == 'P':
-            # Vérification de la rangée où le pion atteint pour promouvoir
-            if (piece.color == chess.WHITE and chess.square_rank(move.to_square) == 7) or \
-               (piece.color == chess.BLACK and chess.square_rank(move.to_square) == 0):
-                
-                # Appeler la fenêtre pour choisir la pièce
-                promotion_choice = promote_pawn()
-                if promotion_choice:
-                    # Supprimer le pion de la case d'origine
-                    board.remove_piece_at(move.from_square)
-
-                    # Créer la pièce choisie pour la promotion
-                    piece_type = None
-                    if promotion_choice == 'q':
-                        piece_type = chess.QUEEN
-                    elif promotion_choice == 'r':
-                        piece_type = chess.ROOK
-                    elif promotion_choice == 'n':
-                        piece_type = chess.KNIGHT
-                    elif promotion_choice == 'b':
-                        piece_type = chess.BISHOP
-
-                    # Créer la nouvelle pièce et la placer sur la case de promotion
-                    promoted_piece = chess.Piece(piece_type, piece.color) if piece_type else None
-    promotion_choice = tk.StringVar(value='q')  # Default to Queen
-
-
-    def select_piece(choice):
-        promotion_choice.set(choice)
-        root.destroy()
-
-    tk.Label(root, text="Choisissez une pièce pour la promotion :").pack(pady=10)
-    tk.Button(root, text="Dame (Q)", command=lambda: select_piece('Q')).pack(pady=5)
-    tk.Button(root, text="Tour (R)", command=lambda: select_piece('R')).pack(pady=5)
-    tk.Button(root, text="Cavalier (N)", command=lambda: select_piece('N')).pack(pady=5)
-    tk.Button(root, text="Fou (B)", command=lambda: select_piece('B')).pack(pady=5)
-
-    root.mainloop()
-    return promotion_choice.get()
-
-def display_winner(winner):
-    font = pygame.font.Font(None, 72)
-    text = font.render(f"Victoire! {winner} ont gagné!", True, (255, 255, 255))
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 3))
-    
-    # Create "Rejouer" button
-    button_width, button_height = 200, 60
-    button_x = WIDTH // 2 - button_width // 2
-    button_y = HEIGHT // 2 + 100
-    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
-    # Create "Quitter" button
-    quit_button_y = HEIGHT // 2 + 200
-    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if button_rect.collidepoint(event.pos):
-                    return "replay"
-                elif quit_button_rect.collidepoint(event.pos):
-                    pygame.quit()
-                    exit()
-
-        screen.fill((0, 0, 0))  # Background black
-        screen.blit(text, text_rect)
-
-        # Draw the "Rejouer" button (white with black text)
-        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
-        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
-        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
-
-        # Draw the "Quitter" button (red with white text)
-        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
-        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
-        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
-
-        pygame.display.flip()
-
-def display_draw(message):
-    font = pygame.font.Font(None, 72)
-    text = font.render(message, True, (255, 255, 255))
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-
-    # Create "Rejouer" button
-    button_width, button_height = 200, 60
-    button_x = WIDTH // 2 - button_width // 2
-    button_y = HEIGHT // 2 + 100
-    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
-    
-    # Create "Quitter" button
-    quit_button_y = HEIGHT // 2 + 200
-    quit_button_rect = pygame.Rect(button_x, quit_button_y, button_width, button_height)
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if button_rect.collidepoint(event.pos):
-                    return "replay"
-                elif quit_button_rect.collidepoint(event.pos):
-                    pygame.quit()
-                    exit()
-
-        screen.fill((0, 0, 0))  # Background black
-        screen.blit(text, text_rect)
-
-        # Draw the "Rejouer" button (white with black text)
-        pygame.draw.rect(screen, (255, 255, 255), button_rect)  # White button
-        button_text = pygame.font.Font(None, 36).render("Rejouer", True, (0, 0, 0))  # Black text
-        screen.blit(button_text, (button_x + (button_width - button_text.get_width()) // 2, button_y + (button_height - button_text.get_height()) // 2))
-
-        # Draw the "Quitter" button (red with white text)
-        pygame.draw.rect(screen, (255, 0, 0), quit_button_rect)  # Red button
-        quit_button_text = pygame.font.Font(None, 36).render("Quitter", True, (255, 255, 255))  # White text
-        screen.blit(quit_button_text, (button_x + (button_width - quit_button_text.get_width()) // 2, quit_button_y + (button_height - quit_button_text.get_height()) // 2))
-
-        pygame.display.flip()
-
-def reset_game():
-    global board, game_over
-    board = chess.Board()  # Réinitialiser l'échiquier à l'état initial
-    game_over = False  # Remettre le flag de fin de jeu à False
-
-def random_move():
-    legal_moves = list(board.legal_moves)
-    if not legal_moves:
-        return None  # Aucun coup légal n'est possible
-    return random.choice(legal_moves)
-
-def handle_pawn_promotion(move):
-    """Gère la promotion d'un pion si nécessaire."""
-    if board.is_legal(move):
-        piece = board.piece_at(move.from_square)
-        
-        # Vérification si c'est bien un pion
-        if piece and piece.symbol().upper() == 'P':
-            # Vérification de la rangée où le pion atteint pour promouvoir
-            if (piece.color == chess.WHITE and chess.square_rank(move.to_square) == 7) or \
-               (piece.color == chess.BLACK and chess.square_rank(move.to_square) == 0):
-                
-                # Appeler la fenêtre pour choisir la pièce
-                promotion_choice = promote_pawn()
-                if promotion_choice:
-                    # Supprimer le pion de la case d'origine
-                    board.remove_piece_at(move.from_square)
-
-                    # Créer la pièce choisie pour la promotion
-                    piece_type = None
-                    if promotion_choice == 'q':
-                        piece_type = chess.QUEEN
-                    elif promotion_choice == 'r':
-                        piece_type = chess.ROOK
-                    elif promotion_choice == 'n':
-                        piece_type = chess.KNIGHT
-                    elif promotion_choice == 'b':
-                        piece_type = chess.BISHOP
-
-                    # Créer la nouvelle pièce et la placer sur la case de promotion
-                    promoted_piece = chess.Piece(piece_type, piece.color)
-                    board.set_piece_at(move.to_square, promoted_piece)
-
-                    return
-            
-            # Si pas de promotion, jouer le coup normalement
-            board.push(move)
-        else:
-            # Si ce n'est pas un pion, jouer le coup normalement
-            board.push(move)
 
 # Fonction IA
 def play_with_ai():
-    """Jouer contre l'IA avec gestion correcte des promotions."""
     global board, game_over
     game_over = False
     turn = True  # True: White's turn (Player), False: Black's turn (AI)
-    selected_square = -1
+    selected_square = -1  # Initialement aucune case sélectionnée
 
     while not game_over:
         for event in pygame.event.get():
@@ -382,7 +163,7 @@ def play_with_ai():
                 pygame.quit()
                 exit()
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and turn:
+            elif event.type == pygame.MOUSEBUTTONDOWN and turn and not game_over:
                 square = get_square_under_mouse(event.pos)
                 if square != -1:
                     piece = board.piece_at(square)
@@ -392,14 +173,18 @@ def play_with_ai():
                             selected_square = square
                     else:  # Déplacer la pièce sélectionnée
                         move = chess.Move(selected_square, square)
+
+                        # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
-                            handle_pawn_promotion(move)  # Gérer les promotions correctement
-                            turn = not turn  # Passer le tour à l'IA
+                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P':
+                                if chess.square_rank(square) == 7 or chess.square_rank(square) == 0:
+                                    promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
+                                    move = chess.Move(selected_square, square, promotion=promotion_piece)
+                            board.push(move)
+                            selected_square = -1
+                            turn = not turn
 
-                        else:
-                            selected_square = -1  # Réinitialiser la sélection
-
-        if not turn:
+        if not turn and not game_over:
             if board.is_checkmate():
                 display_winner("Blanc")
                 game_over = True
@@ -407,33 +192,30 @@ def play_with_ai():
                 display_draw("Match nul!")
                 game_over = True
             else:
-                move = random_move()  # IA joue un mouvement aléatoire
+                move = random_move()
                 if move is not None:
-                    handle_pawn_promotion(move)
-                    turn = not turn  # Retour au joueur
+                    board.push(move)
+                    turn = not turn
                 else:
-                    raise ValueError("Aucun coup légal possible.")
+                    game_over = True
 
-        # Dessin du plateau
-        draw_board()
-        draw_pieces()
-        pygame.display.flip()
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
 
-        # Conditions de fin de partie
+        # Vérifier les conditions de fin de partie
         if board.is_checkmate():
-            winner = "Noir" if not turn else "Blanc"
-            display_winner(winner)
+            display_winner("Blanc" if turn else "Noir")
             game_over = True
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
             game_over = True
 
 def play_with_two_players():
-    """Mode de jeu pour deux joueurs humains."""
     global board, game_over
     game_over = False
     turn = True  # True: White's turn, False: Black's turn
-    selected_square = -1  # Aucune case sélectionnée au départ
+    selected_square = -1  # Initialement aucune case sélectionnée
 
     while not game_over:
         for event in pygame.event.get():
@@ -441,29 +223,33 @@ def play_with_two_players():
                 pygame.quit()
                 exit()
 
-            # Gestion de la sélection et des mouvements
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN and not game_over:
                 square = get_square_under_mouse(event.pos)
                 if square != -1:
                     piece = board.piece_at(square)
 
-                    if selected_square == -1:  # Aucune pièce sélectionnée
+                    if selected_square == -1:  # Sélectionner une pièce
                         if piece is not None and piece.color == (chess.WHITE if turn else chess.BLACK):
                             selected_square = square
-                    else:  # Déplacement d'une pièce
+                    else:  # Déplacer la pièce sélectionnée
                         move = chess.Move(selected_square, square)
+
+                        # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
-                            handle_pawn_promotion(move)  # Gérer les promotions
+                            if board.piece_at(selected_square) and board.piece_at(selected_square).symbol().upper() == 'P':
+                                if chess.square_rank(square) == 7 or chess.square_rank(square) == 0:
+                                    promotion_piece = promote_pawn(chess.WHITE if turn else chess.BLACK)
+                                    move = chess.Move(selected_square, square, promotion=promotion_piece)
+                            board.push(move)
                             selected_square = -1
-                            turn = not turn  # Passer au joueur suivant
+                            turn = not turn
 
 
-        # Dessin du plateau
-        draw_board()
-        draw_pieces()
-        pygame.display.flip()
+        draw_board()  # Dessiner le plateau
+        draw_pieces()  # Dessiner les pièces
+        pygame.display.flip()  # Mettre à jour l'affichage
 
-        # Vérification des conditions de fin de partie
+        # Vérifier les conditions de fin de partie
         if board.is_checkmate():
             winner = "Noir" if turn else "Blanc"
             display_winner(winner)
@@ -534,7 +320,6 @@ def menu_window():
     tk.Button(window, text="Jouer contre l'IA", command=start_ai_game).pack(pady=10)
     tk.Button(window, text="Jouer à 2 joueurs", command=start_two_player_game).pack(pady=10)
     tk.Button(window, text="IA vs IA", command=start_ia_vs_ia_game).pack(pady=10)
-    
     window.mainloop()
 
 # Démarrer le menu
