@@ -3,6 +3,7 @@ from tkinter import messagebox
 from menu_regles import open_rules
 from menu_jouer import open_new_game  # Nous gardons cette fonction pour le menu de jeu
 
+
 def quit_game():
     if messagebox.askyesno("Quitter", "Êtes-vous sûr de vouloir quitter le jeu ?"):
         root.destroy()
