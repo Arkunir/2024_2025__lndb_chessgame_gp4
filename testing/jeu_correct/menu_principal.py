@@ -32,7 +32,7 @@ root.attributes('-fullscreen', True)
 # Titre du jeu
 title_label = tk.Label(
     root,
-    text="Jeu d'Échecs",
+    text="Premium Chess",
     font=("Arial", 48, "bold"),
     fg="#ecf0f1",
     bg="#2c3e50"
