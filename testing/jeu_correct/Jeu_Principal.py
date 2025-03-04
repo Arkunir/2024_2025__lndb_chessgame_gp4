@@ -9,42 +9,47 @@ import chess
 # Initialisation de pygame
 pygame.init()
 
-# Fenêtre Tkinter pour sélectionner un skin
-def select_skin():
-    window = tk.Tk()
-    window.withdraw()  # Cacher la fenêtre principale
-
-    skin_options = {"1": "Type_1", "2": "Type_2", "3": "Type_3", "4": "Type_4"}
-    selected_skin = simpledialog.askstring("Sélection du skin", "Choisissez un skin (1, 2, 3 ou 4) :", parent=window)
-
-    if selected_skin in skin_options:
-        return f"testing/jeu_correct/assets/{skin_options[selected_skin]}/"
-    else:
-        return "testing/jeu_correct/assets/Type_2/"  # Valeur par défaut
-
-# Définir le chemin des assets en fonction du choix de l'utilisateur
-ASSETS_PATH = select_skin()
 
 # Paramètres de la fenêtre
 WIDTH, HEIGHT = 800, 800
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
 
+PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
+
 LIGHT_BROWN = (240, 217, 181)
 DARK_BROWN = (181, 136, 99)
 
-ASSETS_PATH = "testing/jeu_correct/assets/Type_2/"
 PIECE_FILES = {
     'P': "wP.png", 'N': "wN.png", 'B': "wB.png", 'R': "wR.png", 'Q': "wQ.png", 'K': "wK.png",
     'p': "P.png", 'n': "N.png", 'b': "B.png", 'r': "R.png", 'q': "Q.png", 'k': "K.png"
 }
 
-PROMOTION_OPTIONS = ['q', 'r', 'n', 'b']
+# Fonction pour sélectionner un skin via Tkinter
+def select_skin():
+    window = tk.Tk()
+    window.withdraw()  # Cacher la fenêtre principale
 
-# Créer la fenêtre Pygame
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jeu d'échecs")
+    skin_options = {"1": "Type_1", "2": "Type_2", "3": "Type_3", "4": "Type_4"}
+    
+    selected_skin = None
+    while selected_skin not in skin_options:
+        selected_skin = simpledialog.askstring(
+            "Sélection du skin",
+            "Choisissez un skin :\n1 - Type_1\n2 - Type_2\n3 - Type_3\n4 - Type_4",
+            parent=window
+        )
 
+        # Si l'utilisateur annule, on utilise le skin par défaut (Type_2)
+        if selected_skin is None:
+            return "testing/jeu_correct/assets/Type_2/"
+
+    return f"testing/jeu_correct/assets/{skin_options[selected_skin]}/"
+
+# Sélection du skin avant le chargement des pièces
+ASSETS_PATH = select_skin()
+
+# Charger les images des pièces
 def load_pieces():
     pieces = {}
     for piece, filename in PIECE_FILES.items():
@@ -53,7 +58,14 @@ def load_pieces():
         pieces[piece] = image
     return pieces
 
+# Charger les pièces après avoir défini le chemin
 PIECES = load_pieces()
+
+# Créer la fenêtre Pygame
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Jeu d'échecs")
+
+# Initialiser le plateau d'échecs
 board = chess.Board()
 
 # Définition des fonctions de dessin du jeu
