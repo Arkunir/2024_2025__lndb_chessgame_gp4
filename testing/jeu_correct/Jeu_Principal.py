@@ -30,13 +30,13 @@ def select_skin():
     window = tk.Tk()
     window.withdraw()  # Cacher la fenêtre principale
 
-    skin_options = {"1": "Type_1", "2": "Type_2", "3": "Type_3", "4": "Type_4"}
+    skin_options = {"1": "Type_1", "2": "Type_2", "3": "Type_3", "4": "Type_4", "Blind": "Type_5"}
     
     selected_skin = None
     while selected_skin not in skin_options:
         selected_skin = simpledialog.askstring(
             "Sélection du skin",
-            "Choisissez un skin :\n1 - Type_1\n2 - Type_2\n3 - Type_3\n4 - Type_4",
+            "Choisissez un skin :\nGoofy\nClassic\nCartoon\nLichess\nBlind",
             parent=window
         )
 
