@@ -30,7 +30,7 @@ def select_skin():
     window = tk.Tk()
     window.withdraw()  # Cacher la fenêtre principale
 
-    skin_options = {"1": "Type_1", "2": "Type_2", "3": "Type_3", "4": "Type_4", "Blind": "Type_5"}
+    skin_options = {"Goofy": "Type_1", "Classic": "Type_2", "Cartoon": "Type_3", "Lichess": "Type_4", "Blind": "Type_5"}
     
     selected_skin = None
     while selected_skin not in skin_options:
@@ -239,7 +239,7 @@ def play_with_ai():
     global board, game_over, turn
     game_over = False
     turn = True  # True: White's turn (Player), False: Black's turn (AI)
-    selected_square = -1  # Initialement aucune case sélectionnée
+    selected_square = -1
 
     while not game_over:
         for event in pygame.event.get():
@@ -252,58 +252,46 @@ def play_with_ai():
                 if square != -1:
                     piece = board.piece_at(square)
 
-                    # Vérifier si le pion sur lequel on clique est sur la ligne avant-dernière
                     if piece and piece.piece_type == chess.PAWN:
-                        check_pawn_promotion_on_click(square)  # Vérifier la promotion lors du clic
+                        check_pawn_promotion_on_click(square)
 
-                    if selected_square == -1:  # Sélectionner une pièce
+                    if selected_square == -1: 
                         if piece is not None and piece.color == chess.WHITE:
                             selected_square = square
-                    else:  # Déplacer la pièce sélectionnée
+                    else:  
                         move = chess.Move(selected_square, square)
 
-                        # Vérifier si le mouvement est légal
                         if move in board.legal_moves:
                             board.push(move)
-                            check_pawn_promotion()  # Vérifier la promotion après le mouvement
+                            check_pawn_promotion()
                             turn = not turn
                         selected_square = -1
 
-        draw_board()  # Dessiner le plateau
-        draw_pieces()  # Dessiner les pièces
-        pygame.display.flip()  # Mettre à jour l'affichage
+        draw_board()
+        draw_pieces()
+        pygame.display.flip()
 
-        # Vérifier les conditions de fin de partie
-        if board.is_checkmate():
-            winner = "Blanc" if turn else "Noir"
-            display_winner(winner)
-            game_over = True
-        elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
-            display_draw("Match nul!")
-            game_over = True
-
-        if not turn and not game_over:  # Si c'est le tour de l'IA
-            pygame.time.delay(200)  # Délai de 0,2 seconde pour l'IA
+        if not turn and not game_over:
+            pygame.time.delay(200)
             move = random_move()
             if move is not None:
                 board.push(move)
-                check_pawn_promotion()  # Vérifier la promotion après le mouvement
+                check_pawn_promotion()
                 turn = not turn
-            else:
-                game_over = True
 
-        draw_board()  # Dessiner le plateau
-        draw_pieces()  # Dessiner les pièces
-        pygame.display.flip()  # Mettre à jour l'affichage
-
-        # Vérifier les conditions de fin de partie
+        # Vérification unique des conditions de fin
         if board.is_checkmate():
-            winner = "Blanc" if turn else "Noir"
+            winner = "Noir" if board.turn == chess.WHITE else "Blanc"
             display_winner(winner)
             game_over = True
         elif board.is_stalemate() or board.is_insufficient_material() or board.is_seventyfive_moves():
             display_draw("Match nul!")
             game_over = True
+
+        draw_board()
+        draw_pieces()
+        pygame.display.flip()
+
 
 def play_with_two_players():
     global board, game_over, turn
