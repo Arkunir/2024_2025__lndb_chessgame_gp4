@@ -1,9 +1,8 @@
 ### Description:  
-Ce programme est un jeu d'échec qui a plusieurs fonctionnalité tel que:
-  - Des pièces personnalisable
-  - Plateau personnalisable
-  - Possibilité de jouer avec ou sans chronomètre
-  - Différent mode de jeux
+Ce programme est un jeu d'échecs qui a plusieurs fonctionnalités telles que:
+  - Des pièces personnalisables
+  - Différents modes de jeux
+  - Musique en arrière plan
 
 ### Fonctionnalités:  
 *Interface utilisateur interactive :*
@@ -12,11 +11,6 @@ Ce programme est un jeu d'échec qui a plusieurs fonctionnalité tel que:
     - jeu contre IA
     - IA contre IA 
 
-- Possibilité de jouer avec un chronomètre
-
-- Personnalisation des pièces et du plateau
-
-
 ### Installation:  
 Clonez le dépôt : Ouvrez le liens puis cloner le code grâce à [ce dépôt](https://github.com/Arkunir/2024_2025__lndb_chessgame_gp4.git)
 
@@ -24,33 +18,35 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
 
 ### Utilisation:  
 - Installer : Python
-    Dans le terminal installer pygame en faisant:  
+    Dans le terminal installer pygame en entrant la commande:  
       ``pip install pygame``  
-    Dans le terminal installer pygame en faisant:  
+    Dans le terminal installer pygame en entrant la commande:  
       ``pip install python_chess``  
+    Dans le terminal installer pygame en entrant la commande:  
+      ``pip install tk``  `  
 
-- Lancer le programe main.py
+- Lancer le programe menu_principal.py
 
 - Bon jeu!!
 
 ### Status:  
 
-Travail en cour:
-  - Ajouter le lancement du jeu au menu
-  - Création d'une IA complexe
-  - Ajouter le Chrono
-  - Possibiliter de changer le type de pieces
+Travail en cours:
+- il n'y a plus de travail en cours
 
  
-Travail fini:
+Travail achevé:
   - Promotion des pièces
   - Affichage de texte en fin de partie
   - Création des options
   - Création du plateau
   - Création des pièces
-  - Règles basique du jeu
+  - Règles du jeu
   - IA basique
-  - Crée un menu
+  - Création d'un menu
+  - Musique de fond dans le menu et le jeu
+  - Jusqu'à 5 skins différents dont un mode de jeu exclusif
+  - Mode de jeu à l'aveugle
 
 ### Contributeur:  
 
