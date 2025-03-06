@@ -42,9 +42,9 @@ def select_skin():
 
         # Si l'utilisateur annule, on utilise le skin par défaut (Type_2)
         if selected_skin is None:
-            return "testing/jeu_correct/assets/Type_2/"
+            return "testing/jeu_correct/assets/Skins/Type_2/"
 
-    return f"testing/jeu_correct/assets/{skin_options[selected_skin]}/"
+    return f"testing/jeu_correct/assets/Skins/{skin_options[selected_skin]}/"
 
 # Sélection du skin avant le chargement des pièces
 ASSETS_PATH = select_skin()
