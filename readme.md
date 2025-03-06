@@ -23,7 +23,7 @@ Conditions d'exécution : Assurez-vous d'avoir **Python installé** sur votre ma
     Dans le terminal installer pygame en entrant la commande:  
       ``pip install python_chess``  
     Dans le terminal installer pygame en entrant la commande:  
-      ``pip install tk``  `  
+      ``pip install tk``
 
 - Lancer le programe menu_principal.py
 
