@@ -6,7 +6,7 @@ Ce programme est un jeu d'échecs qui a plusieurs fonctionnalités telles que:
 
 ### Fonctionnalités:  
 *Interface utilisateur interactive :*
-- Différent mode de jeux :
+- Différents modes de jeux :
     - à 2
     - jeu contre IA
     - IA contre IA 
