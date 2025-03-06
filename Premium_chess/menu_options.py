@@ -19,36 +19,36 @@ def open_options():
     title_label.pack(pady=20)
 
     # Fonction pour couper le son
-    def mute_song():
+    def mute():
         pygame.mixer.music.pause()
 
     # Fonction pour réactiver le son
-    def unmute_song():
+    def unmute():
         pygame.mixer.music.unpause()
 
     # Bouton Mute
     mute_button = tk.Button(
         options_window,
-        text="Mute song",
+        text="Mute",
         font=("Arial", 16),
         fg="#ecf0f1",
         bg="#3498db",
         activeforeground="#ecf0f1",
         activebackground="#2980b9",
-        command=mute_song
+        command=mute
     )
     mute_button.pack(pady=20)
 
     # Bouton Unmute
     unmute_button = tk.Button(
         options_window,
-        text="Unmute song",
+        text="Unmute",
         font=("Arial", 16),
         fg="#ecf0f1",
         bg="#3498db",
         activeforeground="#ecf0f1",
         activebackground="#2980b9",
-        command=unmute_song
+        command=unmute
     )
     unmute_button.pack(pady=20)
 
