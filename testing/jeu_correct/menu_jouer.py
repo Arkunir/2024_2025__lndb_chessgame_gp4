@@ -1,10 +1,7 @@
 import tkinter as tk
 from tkinter import Menu
-<<<<<<< HEAD
 from Jeu_Principal import main_game
 from menu_jouer import open_new_game  # Nous gardons cette fonction pour le menu de jeu
-=======
->>>>>>> parent of 86436e0 (wip le menu)
 
 def open_new_game():
     # Créer une nouvelle fenêtre pour démarrer une nouvelle partie
